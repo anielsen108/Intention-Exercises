@@ -18,32 +18,32 @@ Every exercise includes:
 
 ### Foundation Documents
 
-**[INSTRUCTIONS.md](INSTRUCTIONS.md)** - Core methodology, ToBI notation guide, stress and pause structure explanation, weekly practice rhythm
+**[Intention Exercises — Instructions](INSTRUCTIONS.md)** - Core methodology, ToBI notation guide, stress and pause structure explanation, weekly practice rhythm
 
 ---
 
 ### Progressive Complexity Exercises
 
-#### **[01-general-exercises.md](01-general-exercises.md)** - General Short Phrases
+#### **[General Exercises — Short Phrases](01-general-exercises.md)**
 100 foundation exercises using brief everyday phrases. Master clean intention shifts with minimal text.
 
 Examples: "Let it go," "That'll do," "Excuse me?", "You shouldn't have," "We're done here"
 
-#### **[02-two-clause-exercises.md](02-two-clause-exercises.md)** - Two-Clause Sentences (1-50)
+#### **[Two-Clause Exercises — Complex Intentions](02-two-clause-exercises.md)** (1-50)
 Complex sentences with dual intentions. Each clause carries independent emotional/communicative aim.
 
 Examples: "I heard what you said, but I don't believe it," "You can leave now, or you can stay and help"
 
-**[02-SUPPLEMENT-two-clause-51-100.md](02-SUPPLEMENT-two-clause-51-100.md)** - Continuation (51-100)
+**[Two-Clause Exercises — Supplement (51-100)](02-SUPPLEMENT-two-clause-51-100.md)**
 
-#### **[03-three-clause-exercises.md](03-three-clause-exercises.md)** - Three-Clause Sentences (1-20)
+#### **[Three-Clause Exercises — Complex Layered Intentions](03-three-clause-exercises.md)** (1-20)
 Advanced prosodic architecture with triple-layered intentions.
 
 Examples: "I wanted to stay, but she insisted I leave, so I walked out reluctantly"
 
-**[03-SUPPLEMENT-three-clause-21-100.md](03-SUPPLEMENT-three-clause-21-100.md)** - Continuation (21-100)
+**[Three-Clause Exercises — Supplement (21-100)](03-SUPPLEMENT-three-clause-21-100.md)**
 
-**[ADVANCED-three-clause-collection.md](ADVANCED-three-clause-collection.md)** - Master-Level Collection
+**[Advanced Three-Clause Sentence Collection](ADVANCED-three-clause-collection.md)**
 100 additional complex three-clause sentences organized by type:
 - Narrative progressions
 - Emotional journeys
@@ -61,55 +61,55 @@ Each specialized page contains 100 exercises focused on a specific dimension of 
 
 #### Original Ten Aspects
 
-**[04-emotional-range.md](04-emotional-range.md)** - Emotional Range (1-65)
+**[Emotional Range — Specialized Exercises](04-emotional-range.md)** (1-65)
 Intensity gradients, emotional transitions, complex emotional blends
 
-**[04-SUPPLEMENT-emotional-range-66-100.md](04-SUPPLEMENT-emotional-range-66-100.md)** - Continuation (66-100)
+**[Emotional Range — Supplement (66-100)](04-SUPPLEMENT-emotional-range-66-100.md)**
 Emotional suppression vs. expression, micro-transitions, authenticity vs. performance
 
-**[05-power-dynamics.md](05-power-dynamics.md)** - Power Dynamics (1-78)
+**[Power Dynamics — Specialized Exercises](05-power-dynamics.md)** (1-78)
 Authority positions, submission, equal-power exchanges, power reversals
 
-**[06-subtextual-irony.md](06-subtextual-irony.md)** - Subtextual Irony (1-82)
+**[Subtextual Irony — Specialized Exercises](06-subtextual-irony.md)** (1-82)
 Sarcasm, understatement, dramatic irony, double meanings
 
-**[07-intimacy-gradients.md](07-intimacy-gradients.md)** - Intimacy Gradients (1-82)
+**[Intimacy Gradients — Specialized Exercises](07-intimacy-gradients.md)** (1-82)
 Formal distance → casual acquaintance → friendly connection → deep connection → maximum intimacy
 
-**[08-temporal-urgency.md](08-temporal-urgency.md)** - Temporal Urgency (1-82)
+**[Temporal Urgency — Specialized Exercises](08-temporal-urgency.md)** (1-82)
 Extreme urgency → moderate pace → low urgency → timeless/eternal
 
-**[09-certainty-spectrum.md](09-certainty-spectrum.md)** - Certainty Spectrum (1-92)
+**[Certainty Spectrum — Specialized Exercises](09-certainty-spectrum.md)** (1-92)
 Absolute certainty → high confidence → moderate → low → high uncertainty → epistemic humility
 
-**[10-social-register.md](10-social-register.md)** - Social Register (1-88)
+**[Social Register — Specialized Exercises](10-social-register.md)** (1-88)
 Formal/professional → business casual → casual/informal → intimate/familiar → slang/vernacular
 
-**[11-conflict-navigation.md](11-conflict-navigation.md)** - Conflict Navigation (1-79)
+**[Conflict Navigation — Specialized Exercises](11-conflict-navigation.md)** (1-79)
 Direct confrontation → assertive → defensive → de-escalation → collaborative resolution
 
-**[12-vulnerability-defense.md](12-vulnerability-defense.md)** - Vulnerability & Defense (1-92)
+**[Vulnerability & Defense — Specialized Exercises](12-vulnerability-defense.md)** (1-92)
 Complete openness → moderate vulnerability → moderate defense → high defense → balanced
 
-**[13-pedagogical-modes.md](13-pedagogical-modes.md)** - Pedagogical Modes (1-93)
+**[Pedagogical Modes — Specialized Exercises](13-pedagogical-modes.md)** (1-93)
 Direct instruction → Socratic inquiry → collaborative learning → corrective feedback → mastery encouragement
 
 #### Twenty New Aspects
 
-**[14-deception-truthfulness.md](14-deception-truthfulness.md)** - Deception & Truthfulness
+**[Deception & Truthfulness — Specialized Exercises](14-deception-truthfulness.md)**
 Complete honesty → white lies/social lubricants → evasion/misdirection → active deception → mixed signals
 
-**[15-enthusiasm-levels.md](15-enthusiasm-levels.md)** - Enthusiasm Levels
+**[Enthusiasm Levels — Specialized Exercises](15-enthusiasm-levels.md)**
 Extreme apathy → low energy → moderate interest → high interest → maximum enthusiasm → calibrated
 
-**[16-20-additional-aspects.md](16-20-additional-aspects.md)** - Five Aspects Combined
+**[Additional Specialized Aspects (16-20)](16-20-additional-aspects.md)** - Five Aspects Combined
 - **Status Signals** - High/low status displays, negotiation, masking
 - **Curiosity Modes** - Genuine inquiry → academic → skeptical → hostile → rhetorical
 - **Boundary Setting** - Permeable → flexible → firm → rigid → repair
 - **Humor Styles** - Playful teasing → self-deprecating → dark → witty → absurdist → satirical
 - **Motivational States** - Defeated → resigned → neutral → determined → inspired
 
-**[21-30-final-aspects.md](21-30-final-aspects.md)** - Ten Aspects Combined
+**[Final Specialized Aspects (21-30)](21-30-final-aspects.md)** - Ten Aspects Combined
 - **Inclusion & Exclusion** - Creating belonging vs. othering
 - **Agreement Strategies** - Consensus building → persuasive → diplomatic disagreement → confrontation
 - **Sensory Descriptions** - Visual, auditory, tactile, gustatory, synesthetic
@@ -291,18 +291,18 @@ This material is designed for educational and artistic development. Users may:
 
 **New to Intention Work?**
 
-1. Read [INSTRUCTIONS.md](INSTRUCTIONS.md) thoroughly
-2. Start with [01-general-exercises.md](01-general-exercises.md), exercises 1-10
+1. Read [Intention Exercises — Instructions](INSTRUCTIONS.md) thoroughly
+2. Start with [General Exercises — Short Phrases](01-general-exercises.md), exercises 1-10
 3. Record yourself doing three variations of each
 4. Listen back and identify which intentions you can distinguish
 5. Practice same 10 exercises daily for one week
 6. Expand to exercises 11-30 in week two
-7. Add one specialized aspect (try [04-emotional-range.md](04-emotional-range.md)) in week three
+7. Add one specialized aspect (try [Emotional Range — Specialized Exercises](04-emotional-range.md)) in week three
 8. Gradually build complexity, returning to foundations regularly
 
 **Experienced Practitioners?**
 
-- Jump directly to [ADVANCED-three-clause-collection.md](ADVANCED-three-clause-collection.md)
+- Jump directly to [Advanced Three-Clause Sentence Collection](ADVANCED-three-clause-collection.md)
 - Explore specialized aspects aligned with your development goals
 - Use as warm-up material before performances
 - Mine for character voice inspiration
