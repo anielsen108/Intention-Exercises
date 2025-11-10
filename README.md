@@ -1,325 +1,279 @@
 # Intention Exercises Repository
 
-A comprehensive vocal intention training system with 3,000+ exercises exploring prosody, intonation, and delivery variations across 30 specialized aspects of human communication.
+A comprehensive vocal intention training system with **6,000+ exercises** exploring prosody, intonation, and delivery variations across 30 specialized aspects of human communication.
 
-## Overview
+## Two Complete Approaches
 
-This repository provides systematic practice for developing vocal flexibility and intention clarity. Each exercise presents the same text delivered with three distinct intentions, teaching practitioners to shift prosody, tempo, and tonal qualities to convey precise communicative aims.
+This repository offers two parallel methodologies for developing vocal intention:
 
-### Core Methodology
+### **ToBI Approach** (Tones and Break Indices)
+Linguistic notation system marking abstract phonological categories. Ideal for understanding the phonological structure of English intonation.
 
-Every exercise includes:
-- **ToBI Notation** (Tones and Break Indices) for intonation patterns
-- **Stress Markers** indicating emphasized/extended words
-- **Pause Structure** showing major/minor breaks and smooth connections
-- **Three Intention Variations** demonstrating distinct emotional/communicative approaches
+**Located in:** `ToBI approach/` folder
 
-## Repository Contents
+### **IPA Approach** (International Phonetic Alphabet)
+Direct phonetic transcription using five-level tone notation. Ideal for precise, reproducible pitch targets in performance.
 
-### Foundation Documents
-
-**[Intention Exercises — Instructions](INSTRUCTIONS.md)** - Core methodology, ToBI notation guide, stress and pause structure explanation, weekly practice rhythm
+**Located in:** `IPA Approach/` folder
 
 ---
 
-### Progressive Complexity Exercises
+## Which Approach Should I Use?
 
-#### **[General Exercises — Short Phrases](01-general-exercises.md)**
-100 foundation exercises using brief everyday phrases. Master clean intention shifts with minimal text.
+| Aspect | ToBI Approach | IPA Approach |
+|--------|---------------|--------------|
+| **Notation** | H*, L*, L+H*, etc. | ˥, ˩, ˩˧˥, etc. |
+| **Focus** | Phonological patterns | Phonetic pitch contours |
+| **Best For** | Linguistic analysis, pattern recognition | Performance, acting, precise pitch control |
+| **Learning Curve** | Requires linguistic background | More intuitive for musicians |
+| **Precision** | Abstract categories | Exact pitch levels (1-5) |
 
-Examples: "Let it go," "That'll do," "Excuse me?", "You shouldn't have," "We're done here"
-
-#### **[Two-Clause Exercises — Complex Intentions](02-two-clause-exercises.md)** (1-50)
-Complex sentences with dual intentions. Each clause carries independent emotional/communicative aim.
-
-Examples: "I heard what you said, but I don't believe it," "You can leave now, or you can stay and help"
-
-**[Two-Clause Exercises — Supplement (51-100)](02-SUPPLEMENT-two-clause-51-100.md)**
-
-#### **[Three-Clause Exercises — Complex Layered Intentions](03-three-clause-exercises.md)** (1-20)
-Advanced prosodic architecture with triple-layered intentions.
-
-Examples: "I wanted to stay, but she insisted I leave, so I walked out reluctantly"
-
-**[Three-Clause Exercises — Supplement (21-100)](03-SUPPLEMENT-three-clause-21-100.md)**
-
-**[Advanced Three-Clause Sentence Collection](ADVANCED-three-clause-collection.md)**
-100 additional complex three-clause sentences organized by type:
-- Narrative progressions
-- Emotional journeys
-- Three-person dynamics
-- Conditional complexity
-- Causal chains
-- Temporal relationships
-- Contrastive progressions
+**Choose ToBI** if you want to understand intonational phonology.
+**Choose IPA** if you want precise performance targets.
+**Use both** for comprehensive mastery.
 
 ---
 
-### Specialized Aspects (30 Domains)
+## Repository Structure
 
-Each specialized page contains 100 exercises focused on a specific dimension of intention.
+Each approach contains identical content with different notation systems:
 
-#### Original Ten Aspects
+### Foundation
+- **INSTRUCTIONS.md** — Core methodology and notation guide
 
-**[Emotional Range — Specialized Exercises](04-emotional-range.md)** (1-65)
-Intensity gradients, emotional transitions, complex emotional blends
+### Progressive Complexity
+- **01-general-exercises.md** — 100 short phrases
+- **02-two-clause-exercises.md** — 100 two-clause sentences
+- **03-three-clause-exercises.md** — 100 three-clause sentences
+- **ADVANCED-three-clause-collection.md** — 100 advanced exercises
 
-**[Emotional Range — Supplement (66-100)](04-SUPPLEMENT-emotional-range-66-100.md)**
-Emotional suppression vs. expression, micro-transitions, authenticity vs. performance
+### 30 Specialized Aspects (100 exercises each)
 
-**[Power Dynamics — Specialized Exercises](05-power-dynamics.md)** (1-78)
-Authority positions, submission, equal-power exchanges, power reversals
+#### Original Ten Aspects (04-13)
+1. **Emotional Range** — Joy to despair, gradations and complex blends
+2. **Power Dynamics** — Authority, submission, equality, status negotiation
+3. **Subtextual Irony** — Sarcasm, double meanings, implied criticism
+4. **Intimacy Gradients** — Formal distance to deep vulnerability
+5. **Temporal Urgency** — Leisurely patience to critical time pressure
+6. **Certainty Spectrum** — Absolute confidence to complete doubt
+7. **Social Register** — Casual to formal speech patterns
+8. **Conflict Navigation** — Confrontation, de-escalation, resolution
+9. **Vulnerability & Defense** — Openness to guardedness
+10. **Pedagogical Modes** — Teaching, explaining, demonstrating
 
-**[Subtextual Irony — Specialized Exercises](06-subtextual-irony.md)** (1-82)
-Sarcasm, understatement, dramatic irony, double meanings
+#### Twenty Additional Aspects (14-33)
+11. **Deception & Truthfulness** — Honesty to active deception
+12. **Enthusiasm Levels** — Apathy to maximum excitement
+13. **Status Signals** — High to low status communication
+14. **Curiosity Modes** — Wonder, investigation, skepticism
+15. **Boundary Setting** — Gentle to firm limit-setting
+16. **Humor Styles** — Playful to dark wit
+17. **Motivational States** — Apathy to peak drive
+18. **Inclusion & Exclusion** — Welcoming to rejecting
+19. **Agreement Strategies** — Alignment to opposition
+20. **Sensory Descriptions** — Multi-sensory communication
+21. **Philosophical Stances** — Existential to pragmatic
+22. **Decision-Making Modes** — Decisive to intuitive
+23. **Energy Levels** — Peak vitality to exhaustion
+24. **Trust Building** — Building and repairing trust
+25. **Playfulness & Seriousness** — Fun to sacred
+26. **Resistance Patterns** — Flow to defiance
+27. **Aspirational Speaking** — Vision and manifestation
+28-30. **Additional specialized dimensions**
 
-**[Intimacy Gradients — Specialized Exercises](07-intimacy-gradients.md)** (1-82)
-Formal distance → casual acquaintance → friendly connection → deep connection → maximum intimacy
+---
 
-**[Temporal Urgency — Specialized Exercises](08-temporal-urgency.md)** (1-82)
-Extreme urgency → moderate pace → low urgency → timeless/eternal
+## Total Content
 
-**[Certainty Spectrum — Specialized Exercises](09-certainty-spectrum.md)** (1-92)
-Absolute certainty → high confidence → moderate → low → high uncertainty → epistemic humility
+- **2 Complete Approaches** (ToBI + IPA)
+- **6,000+ Exercises** (3,000 per approach)
+- **30 Specialized Aspects** per approach
+- **100 Exercises** per specialized aspect
+- **Identical pedagogical structure** in both approaches
 
-**[Social Register — Specialized Exercises](10-social-register.md)** (1-88)
-Formal/professional → business casual → casual/informal → intimate/familiar → slang/vernacular
+---
 
-**[Conflict Navigation — Specialized Exercises](11-conflict-navigation.md)** (1-79)
-Direct confrontation → assertive → defensive → de-escalation → collaborative resolution
+## Getting Started
 
-**[Vulnerability & Defense — Specialized Exercises](12-vulnerability-defense.md)** (1-92)
-Complete openness → moderate vulnerability → moderate defense → high defense → balanced
+### New to Intention Work?
 
-**[Pedagogical Modes — Specialized Exercises](13-pedagogical-modes.md)** (1-93)
-Direct instruction → Socratic inquiry → collaborative learning → corrective feedback → mastery encouragement
+**Step 1:** Choose your approach (ToBI or IPA)
 
-#### Twenty New Aspects
+**Step 2:** Read the INSTRUCTIONS.md file in your chosen folder
+- `ToBI approach/INSTRUCTIONS.md` for linguistic notation
+- `IPA Approach/INSTRUCTIONS.md` for pitch notation
 
-**[Deception & Truthfulness — Specialized Exercises](14-deception-truthfulness.md)**
-Complete honesty → white lies/social lubricants → evasion/misdirection → active deception → mixed signals
+**Step 3:** Start with 01-general-exercises.md (exercises 1-10)
 
-**[Enthusiasm Levels — Specialized Exercises](15-enthusiasm-levels.md)**
-Extreme apathy → low energy → moderate interest → high interest → maximum enthusiasm → calibrated
+**Step 4:** Practice each exercise with three intention variations
 
-**[Additional Specialized Aspects (16-20)](16-20-additional-aspects.md)** - Five Aspects Combined
-- **Status Signals** - High/low status displays, negotiation, masking
-- **Curiosity Modes** - Genuine inquiry → academic → skeptical → hostile → rhetorical
-- **Boundary Setting** - Permeable → flexible → firm → rigid → repair
-- **Humor Styles** - Playful teasing → self-deprecating → dark → witty → absurdist → satirical
-- **Motivational States** - Defeated → resigned → neutral → determined → inspired
+**Step 5:** Record yourself and listen back for clarity
 
-**[Final Specialized Aspects (21-30)](21-30-final-aspects.md)** - Ten Aspects Combined
-- **Inclusion & Exclusion** - Creating belonging vs. othering
-- **Agreement Strategies** - Consensus building → persuasive → diplomatic disagreement → confrontation
-- **Sensory Descriptions** - Visual, auditory, tactile, gustatory, synesthetic
-- **Philosophical Stances** - Existential, pragmatic, idealistic, cynical, stoic, absurdist
-- **Decision-Making Modes** - Impulsive → deliberative → paralyzed → decisive → collaborative
-- **Energy Levels** - Exhausted → low → moderate → high → frantic
-- **Trust Building** - Suspicious → cautious → provisional → deep trust
-- **Playfulness & Seriousness** - Silly → playful → balanced → serious → grave
-- **Resistance Patterns** - Passive → active → covert → strategic
-- **Aspirational Speaking** - Wishful → visioning → planning → committing → achieving
+**Step 6:** Expand gradually over weeks
+
+### Experienced Practitioners?
+
+- Jump to ADVANCED-three-clause-collection.md in either approach
+- Explore specialized aspects aligned with your development goals
+- Use as warm-up material before performances
+- Mine for character voice inspiration
+- Practice code-switching fluency across registers
+- Compare ToBI and IPA approaches for the same exercise
+
+---
+
+## Quick Start Guides
+
+### ToBI Approach Quick Start
+
+1. Read [Intention Exercises — Instructions](ToBI approach/INSTRUCTIONS.md)
+2. Start with [General Exercises — Short Phrases](ToBI approach/01-general-exercises.md), exercises 1-10
+3. Practice understanding H*, L*, L+H* pitch accents
+4. Move to two-clause exercises when comfortable
+5. Add one specialized aspect in week three
+
+### IPA Approach Quick Start
+
+1. Read [Intention Exercises — Instructions](IPA Approach/INSTRUCTIONS.md)
+2. Start with [General Exercises — Short Phrases](IPA Approach/01-general-exercises.md), exercises 1-10
+3. Practice distinguishing ˥˩ (falling) from ˩˧ (rising) contours
+4. Use pitch tracker apps to verify accuracy
+5. Progress to complex exercises when pitch control is consistent
+
+---
+
+## Notation Examples
+
+### ToBI Notation Example
+```
+**Encouraging release**
+- ToBI: L* H* L-L%
+- Stress: Let it **GO**
+- Pause: Let , it **go**.
+- Breathy tone, slow fall.
+```
+
+### IPA Notation Example
+```
+**Firm command**
+— [Stop˥˩]. [˥ ˩ => ˥˩]
+(High falling contour on nuclear syllable)
+```
 
 ---
 
 ## Practice Recommendations
 
-### Weekly Rhythm
-- **Weeks 1-4:** General short phrases (foundation)
-- **Weeks 5-8:** Two-clause sentences (layering)
-- **Weeks 9-12:** Three-clause sentences (complexity)
-- **Week 13+:** Rotate through specialized aspects
+### Weekly Structure
 
-### Daily Practice (2 minutes per exercise)
-1. Stand, breathe low; one silent inhale per take
-2. Mark one key word each time
-3. Keep timing consistent (≈1.8-2.2s per take)
-4. Record three takes as single clip
-5. Listen back: can you identify intentions blind?
+**Week 1-2:** Foundation
+- 10 short phrases daily
+- Focus on clean intention shifts
+- Record and listen back
 
-### Progression Strategy
-1. Master one aspect before adding another
-2. Practice same exercise weekly to track growth
-3. Use mirror to catch facial expressions
-4. Notice which intentions feel natural vs. difficult
-5. Build from authentic feeling states, not performance
+**Week 3-4:** Two-Clause Complexity
+- Add 5 two-clause exercises daily
+- Practice contrasting intentions between clauses
 
-### Integration Methods
-- Solo recording and self-assessment
-- Partner practice with blind identification
-- Contextual application in real conversations
-- Performance work (monologues, presentations)
-- Teaching/coaching others
+**Week 5+:** Three-Clause & Specialized Aspects
+- Complex sentences with triple intentions
+- One specialized aspect per week
+- Advanced variations
 
----
+### Recording & Assessment
 
-## Notation Reference
-
-### ToBI Pitch Accents
-- **H\*** = high pitch accent (prominence)
-- **L\*** = low pitch accent
-- **L+H\*** = rise to prominence
-- **H+L\*** = fall from prominence
-- **!H\*** = downstepped high (less prominent than previous H*)
-
-### Boundary Tones
-- **L-L%** = low phrase tone + low boundary (falling finality)
-- **L-H%** = low phrase tone + high boundary (rising, questioning)
-- **H-H%** = high phrase tone + high boundary (continuation rise)
-
-### Pause Structure
-- **//** = major pause (break index 4)
-- **/** = minor pause (break index 3)
-- **,** = slight pause/hesitation (break index 2)
-- No mark = smooth connection (break index 1)
-
-### Stress Notation
-- **CAPS** = primary stress on this word
-- **bold** = extended/lengthened word
-- *Italics* = lighter/de-emphasized
-
----
-
-## Exercise Statistics
-
-- **Total Exercises:** 3,000+
-- **Specialized Aspects:** 30
-- **Complexity Levels:** 3 (short phrases, two-clause, three-clause)
-- **Intention Variations:** 3 per exercise
-- **Total Practice Combinations:** 9,000+
-
----
-
-## Pedagogical Approach
-
-This repository teaches vocal intention through:
-
-1. **Systematic Variation** - Same text, different deliveries reveals prosodic elements
-2. **Explicit Notation** - ToBI, stress, pause make implicit patterns explicit
-3. **Holistic Integration** - Physical, emotional, cognitive elements unified
-4. **Progressive Complexity** - Foundation → layering → mastery
-5. **Domain Coverage** - 30 aspects span full range of human communication
-6. **Authentic Practice** - Real feeling states, not mechanical performance
-7. **Self-Assessment** - Recording and reflection build metacognitive awareness
-
----
-
-## Applications
-
-### Performance
-- Actor training for character voice work
-- Monologue preparation and delivery
-- Vocal variety in long-form performance
-- Sustaining complex emotional states
-
-### Professional Communication
-- Presentation skills and public speaking
-- Leadership presence and authority
-- Collaborative facilitation
-- Conflict resolution and difficult conversations
-
-### Interpersonal Relationships
-- Emotional clarity and congruence
-- Boundary setting and assertion
-- Vulnerability and authentic disclosure
-- Empathy and perspective-taking
-
-### Personal Development
-- Emotional intelligence and regulation
-- Self-awareness of habitual patterns
-- Expanding expressive range
-- Integrating thinking, feeling, and speaking
-
----
-
-## Advanced Features
-
-### Micro-Prosodic Elements
-- Breath placement and support
-- Vowel quality modulation
-- Consonant articulation variations
-- Tempo and rhythm shifts
-- Volume dynamics
-- Pitch range utilization
-
-### Contextual Adaptation
-- Cultural variations in expression
-- Gender and identity considerations
-- Professional vs. personal registers
-- Age-appropriate communication
-- Power dynamics awareness
-
-### Meta-Skills Developed
-- Self-monitoring and adjustment
-- Pattern recognition in others
-- Intention-matching across modalities
-- Prosodic planning and execution
-- Real-time decision-making
-
----
-
-## Contributing
-
-This repository is designed for:
-- Voice teachers and coaches
-- Acting and performance instructors
-- Communication trainers
-- Speech-language pathologists
-- Anyone developing vocal flexibility
-
-Practitioners are encouraged to:
-- Create additional exercises in established formats
-- Share recordings for feedback
-- Adapt exercises to specific contexts
-- Contribute cultural/linguistic variations
-- Document personal practice insights
-
----
-
-## License & Usage
-
-This material is designed for educational and artistic development. Users may:
-- Practice all exercises freely
-- Adapt for teaching contexts
-- Create derivative works with attribution
-- Share with students and colleagues
-
----
-
-## Quick Start Guide
-
-**New to Intention Work?**
-
-1. Read [Intention Exercises — Instructions](INSTRUCTIONS.md) thoroughly
-2. Start with [General Exercises — Short Phrases](01-general-exercises.md), exercises 1-10
-3. Record yourself doing three variations of each
-4. Listen back and identify which intentions you can distinguish
-5. Practice same 10 exercises daily for one week
-6. Expand to exercises 11-30 in week two
-7. Add one specialized aspect (try [Emotional Range — Specialized Exercises](04-emotional-range.md)) in week three
-8. Gradually build complexity, returning to foundations regularly
-
-**Experienced Practitioners?**
-
-- Jump directly to [Advanced Three-Clause Sentence Collection](ADVANCED-three-clause-collection.md)
-- Explore specialized aspects aligned with your development goals
-- Use as warm-up material before performances
-- Mine for character voice inspiration
-- Practice code-switching fluency across registers
+1. Record each variation 3x
+2. Listen for:
+   - Pitch accuracy (IPA) or pattern matching (ToBI)
+   - Stress placement
+   - Pause timing
+   - Intention clarity
+3. Use pitch analysis software (optional but helpful)
 
 ---
 
 ## Repository Philosophy
 
-**Intention is not performance.** This work develops authentic vocal expression grounded in genuine internal states, not surface-level acting. The goal is congruence: your voice accurately reflecting your actual intention, whether in art or life.
+**Systematic:** Progress from simple to complex in graduated steps
 
-**Prosody is meaning.** The same words with different intonation convey entirely different messages. Mastering prosodic variation expands your communicative power exponentially.
+**Comprehensive:** 30 aspects cover the full range of human vocal expression
 
-**Practice reveals patterns.** Recording yourself makes unconscious habits conscious. What you discover about your voice teaches you about yourself.
+**Dual-Method:** ToBI and IPA offer complementary perspectives
 
-**Flexibility serves authenticity.** Developing range doesn't make you inauthentic—it gives you more tools to express your true self accurately across diverse contexts.
+**Practical:** Designed for actors, voice actors, teachers, linguists, and communication professionals
+
+**Research-Based:** Grounded in prosody research and phonetic science
 
 ---
 
-**Begin your intention practice journey. Your voice is waiting to reveal its full expressive potential.**
+## File Organization
+
+```
+Intention-Exercises/
+├── README.md (this file)
+├── ToBI approach/
+│   ├── INSTRUCTIONS.md
+│   ├── 01-general-exercises.md
+│   ├── 02-two-clause-exercises.md
+│   ├── 03-three-clause-exercises.md
+│   ├── 04-emotional-range.md
+│   ├── 05-power-dynamics.md
+│   ├── ... (30 total specialized aspects)
+│   └── ADVANCED-three-clause-collection.md
+└── IPA Approach/
+    ├── INSTRUCTIONS.md
+    ├── 01-general-exercises.md
+    ├── 02-two-clause-exercises.md
+    ├── 03-three-clause-exercises.md
+    ├── 04-emotional-range.md
+    ├── 05-power-dynamics.md
+    ├── ... (30 total specialized aspects)
+    └── ADVANCED-three-clause-collection.md
+```
+
+---
+
+## For Different Users
+
+**Actors & Voice Actors:** Use exercises for character voice development, audition prep, and range expansion
+
+**Linguists & Phoneticians:** Compare ToBI and IPA approaches for research and analysis
+
+**Teachers & Coaches:** Structured curriculum for teaching vocal intention and prosody
+
+**Public Speakers:** Develop command, warmth, authority, and persuasive delivery
+
+**Musicians:** Explore pitch control and melodic speech patterns
+
+**Language Learners:** Master English intonation patterns for natural-sounding speech
+
+---
+
+## Technical Notes
+
+### ToBI System
+- **H\***, **L\***: High/low pitch accents (prominence)
+- **L+H\***, **H+L\***: Rising/falling to prominence
+- **L-L%**, **H-H%**, **L-H%**: Boundary tones (finality, continuation, questioning)
+
+### IPA System
+- **˥ ˦ ˧ ˨ ˩**: Five tone levels (5=highest, 1=lowest)
+- **˩˧˥**: Contour tones (combined levels)
+- **[˩ ˧ ˥ => ˩˧˥]**: Tone legend (spaced and fused forms)
+
+---
+
+## About This Repository
+
+Created as a comprehensive resource for vocal intention training, combining insights from:
+- Prosody research
+- Phonetic science (ToBI and IPA systems)
+- Acting technique
+- Communication studies
+- Voice pedagogy
+
+**Total Development:** 6,000+ individually crafted exercises across two complete notation systems.
+
+---
+
+*Practice with patience and precision. The voice is an instrument that rewards consistent, mindful work.*
