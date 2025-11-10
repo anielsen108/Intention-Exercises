@@ -9,12 +9,12 @@ This repository offers two parallel methodologies for developing vocal intention
 ### **ToBI Approach** (Tones and Break Indices)
 Linguistic notation system marking abstract phonological categories. Ideal for understanding the phonological structure of English intonation.
 
-**Located in:** `ToBI approach/` folder
+**Located in:** `ToBI-approach/` folder
 
 ### **IPA Approach** (International Phonetic Alphabet)
 Direct phonetic transcription using five-level tone notation. Ideal for precise, reproducible pitch targets in performance.
 
-**Located in:** `IPA Approach/` folder
+**Located in:** `IPA-Approach/` folder
 
 ---
 
@@ -88,32 +88,32 @@ Each approach contains identical content with different notation systems:
 ### ToBI Approach (Linguistic Notation)
 
 #### Foundation
-- **[Instructions & Methodology](ToBI approach/INSTRUCTIONS.md)** — ToBI notation guide, stress markers, pause structure
+- **[Instructions & Methodology](ToBI-approach/INSTRUCTIONS.md)** — ToBI notation guide, stress markers, pause structure
 
 #### Progressive Complexity
-- **[General Exercises (1-100)](ToBI approach/01-general-exercises.md)** — Short phrases
-- **[Two-Clause Exercises (1-50)](ToBI approach/02-two-clause-exercises.md)** — Dual intentions
-- **[Two-Clause Supplement (51-100)](ToBI approach/02-SUPPLEMENT-two-clause-51-100.md)**
-- **[Three-Clause Exercises (1-20)](ToBI approach/03-three-clause-exercises.md)** — Triple-layered intentions
-- **[Three-Clause Supplement (21-100)](ToBI approach/03-SUPPLEMENT-three-clause-21-100.md)**
-- **[Advanced Three-Clause Collection (100)](ToBI approach/ADVANCED-three-clause-collection.md)**
+- **[General Exercises (1-100)](ToBI-approach/01-general-exercises.md)** — Short phrases
+- **[Two-Clause Exercises (1-50)](ToBI-approach/02-two-clause-exercises.md)** — Dual intentions
+- **[Two-Clause Supplement (51-100)](ToBI-approach/02-SUPPLEMENT-two-clause-51-100.md)**
+- **[Three-Clause Exercises (1-20)](ToBI-approach/03-three-clause-exercises.md)** — Triple-layered intentions
+- **[Three-Clause Supplement (21-100)](ToBI-approach/03-SUPPLEMENT-three-clause-21-100.md)**
+- **[Advanced Three-Clause Collection (100)](ToBI-approach/ADVANCED-three-clause-collection.md)**
 
 #### Specialized Aspects (100 exercises each)
-- **[04: Emotional Range](ToBI approach/04-emotional-range.md)** (1-65) + **[Supplement (66-100)](ToBI approach/04-SUPPLEMENT-emotional-range-66-100.md)**
-- **[05: Power Dynamics](ToBI approach/05-power-dynamics.md)**
-- **[06: Subtextual Irony](ToBI approach/06-subtextual-irony.md)**
-- **[07: Intimacy Gradients](ToBI approach/07-intimacy-gradients.md)**
-- **[08: Temporal Urgency](ToBI approach/08-temporal-urgency.md)**
-- **[09: Certainty Spectrum](ToBI approach/09-certainty-spectrum.md)**
-- **[10: Social Register](ToBI approach/10-social-register.md)**
-- **[11: Conflict Navigation](ToBI approach/11-conflict-navigation.md)**
-- **[12: Vulnerability & Defense](ToBI approach/12-vulnerability-defense.md)**
-- **[13: Pedagogical Modes](ToBI approach/13-pedagogical-modes.md)**
-- **[14: Deception & Truthfulness](ToBI approach/14-deception-truthfulness.md)**
-- **[15: Enthusiasm Levels](ToBI approach/15-enthusiasm-levels.md)**
-- **[16-20: Additional Aspects (5 aspects, 500 exercises)](ToBI approach/16-20-additional-aspects.md)**
+- **[04: Emotional Range](ToBI-approach/04-emotional-range.md)** (1-65) + **[Supplement (66-100)](ToBI-approach/04-SUPPLEMENT-emotional-range-66-100.md)**
+- **[05: Power Dynamics](ToBI-approach/05-power-dynamics.md)**
+- **[06: Subtextual Irony](ToBI-approach/06-subtextual-irony.md)**
+- **[07: Intimacy Gradients](ToBI-approach/07-intimacy-gradients.md)**
+- **[08: Temporal Urgency](ToBI-approach/08-temporal-urgency.md)**
+- **[09: Certainty Spectrum](ToBI-approach/09-certainty-spectrum.md)**
+- **[10: Social Register](ToBI-approach/10-social-register.md)**
+- **[11: Conflict Navigation](ToBI-approach/11-conflict-navigation.md)**
+- **[12: Vulnerability & Defense](ToBI-approach/12-vulnerability-defense.md)**
+- **[13: Pedagogical Modes](ToBI-approach/13-pedagogical-modes.md)**
+- **[14: Deception & Truthfulness](ToBI-approach/14-deception-truthfulness.md)**
+- **[15: Enthusiasm Levels](ToBI-approach/15-enthusiasm-levels.md)**
+- **[16-20: Additional Aspects (5 aspects, 500 exercises)](ToBI-approach/16-20-additional-aspects.md)**
   - Status Signals, Curiosity Modes, Boundary Setting, Humor Styles, Motivational States
-- **[21-30: Final Aspects (10 aspects, 1000 exercises)](ToBI approach/21-30-final-aspects.md)**
+- **[21-30: Final Aspects (10 aspects, 1000 exercises)](ToBI-approach/21-30-final-aspects.md)**
   - Inclusion & Exclusion, Agreement Strategies, Sensory Descriptions, Philosophical Stances, Decision-Making Modes, Energy Levels, Trust Building, Playfulness & Seriousness, Resistance Patterns, Aspirational Speaking
 
 ---
@@ -121,30 +121,30 @@ Each approach contains identical content with different notation systems:
 ### IPA Approach (Phonetic Pitch Notation)
 
 #### Foundation
-- **[Instructions & Methodology](IPA Approach/INSTRUCTIONS.md)** — IPA tone notation guide, pitch contours, five-level system
+- **[Instructions & Methodology](IPA-Approach/INSTRUCTIONS.md)** — IPA tone notation guide, pitch contours, five-level system
 
 #### Progressive Complexity
-- **[General Exercises (1-100)](IPA Approach/01-general-exercises.md)** — Short phrases
-- **[Two-Clause Exercises (1-100)](IPA Approach/02-two-clause-exercises.md)** — Dual intentions
-- **[Three-Clause Exercises (1-100)](IPA Approach/03-three-clause-exercises.md)** — Triple-layered intentions
-- **[Advanced Three-Clause Collection (100)](IPA Approach/ADVANCED-three-clause-collection.md)**
+- **[General Exercises (1-100)](IPA-Approach/01-general-exercises.md)** — Short phrases
+- **[Two-Clause Exercises (1-100)](IPA-Approach/02-two-clause-exercises.md)** — Dual intentions
+- **[Three-Clause Exercises (1-100)](IPA-Approach/03-three-clause-exercises.md)** — Triple-layered intentions
+- **[Advanced Three-Clause Collection (100)](IPA-Approach/ADVANCED-three-clause-collection.md)**
 
 #### Specialized Aspects (100 exercises each)
-- **[04: Emotional Range](IPA Approach/04-emotional-range.md)**
-- **[05: Power Dynamics](IPA Approach/05-power-dynamics.md)**
-- **[06: Subtextual Irony](IPA Approach/06-subtextual-irony.md)**
-- **[07: Intimacy Gradients](IPA Approach/07-intimacy-gradients.md)**
-- **[08: Temporal Urgency](IPA Approach/08-temporal-urgency.md)**
-- **[09: Certainty Spectrum](IPA Approach/09-certainty-spectrum.md)**
-- **[10: Social Register](IPA Approach/10-social-register.md)**
-- **[11: Conflict Navigation](IPA Approach/11-conflict-navigation.md)**
-- **[12: Vulnerability & Defense](IPA Approach/12-vulnerability-defense.md)**
-- **[13: Pedagogical Modes](IPA Approach/13-pedagogical-modes.md)**
-- **[14: Deception & Truthfulness](IPA Approach/14-deception-truthfulness.md)**
-- **[15: Enthusiasm Levels](IPA Approach/15-enthusiasm-levels.md)**
-- **[16-20: Additional Aspects (5 aspects, 500 exercises)](IPA Approach/16-20-additional-aspects.md)**
+- **[04: Emotional Range](IPA-Approach/04-emotional-range.md)**
+- **[05: Power Dynamics](IPA-Approach/05-power-dynamics.md)**
+- **[06: Subtextual Irony](IPA-Approach/06-subtextual-irony.md)**
+- **[07: Intimacy Gradients](IPA-Approach/07-intimacy-gradients.md)**
+- **[08: Temporal Urgency](IPA-Approach/08-temporal-urgency.md)**
+- **[09: Certainty Spectrum](IPA-Approach/09-certainty-spectrum.md)**
+- **[10: Social Register](IPA-Approach/10-social-register.md)**
+- **[11: Conflict Navigation](IPA-Approach/11-conflict-navigation.md)**
+- **[12: Vulnerability & Defense](IPA-Approach/12-vulnerability-defense.md)**
+- **[13: Pedagogical Modes](IPA-Approach/13-pedagogical-modes.md)**
+- **[14: Deception & Truthfulness](IPA-Approach/14-deception-truthfulness.md)**
+- **[15: Enthusiasm Levels](IPA-Approach/15-enthusiasm-levels.md)**
+- **[16-20: Additional Aspects (5 aspects, 500 exercises)](IPA-Approach/16-20-additional-aspects.md)**
   - Status Signals, Curiosity Modes, Boundary Setting, Humor Styles, Motivational States
-- **[21-30: Final Aspects (10 aspects, 1000 exercises)](IPA Approach/21-30-final-aspects.md)**
+- **[21-30: Final Aspects (10 aspects, 1000 exercises)](IPA-Approach/21-30-final-aspects.md)**
   - Inclusion & Exclusion, Agreement Strategies, Sensory Descriptions, Philosophical Stances, Decision-Making Modes, Energy Levels, Trust Building, Playfulness & Seriousness, Resistance Patterns, Aspirational Speaking
 
 ---
@@ -166,8 +166,8 @@ Each approach contains identical content with different notation systems:
 **Step 1:** Choose your approach (ToBI or IPA)
 
 **Step 2:** Read the INSTRUCTIONS.md file in your chosen folder
-- `ToBI approach/INSTRUCTIONS.md` for linguistic notation
-- `IPA Approach/INSTRUCTIONS.md` for pitch notation
+- `ToBI-approach/INSTRUCTIONS.md` for linguistic notation
+- `IPA-Approach/INSTRUCTIONS.md` for pitch notation
 
 **Step 3:** Start with 01-general-exercises.md (exercises 1-10)
 
@@ -192,16 +192,16 @@ Each approach contains identical content with different notation systems:
 
 ### ToBI Approach Quick Start
 
-1. Read [Intention Exercises — Instructions](ToBI approach/INSTRUCTIONS.md)
-2. Start with [General Exercises — Short Phrases](ToBI approach/01-general-exercises.md), exercises 1-10
+1. Read [Intention Exercises — Instructions](ToBI-approach/INSTRUCTIONS.md)
+2. Start with [General Exercises — Short Phrases](ToBI-approach/01-general-exercises.md), exercises 1-10
 3. Practice understanding H*, L*, L+H* pitch accents
 4. Move to two-clause exercises when comfortable
 5. Add one specialized aspect in week three
 
 ### IPA Approach Quick Start
 
-1. Read [Intention Exercises — Instructions](IPA Approach/INSTRUCTIONS.md)
-2. Start with [General Exercises — Short Phrases](IPA Approach/01-general-exercises.md), exercises 1-10
+1. Read [Intention Exercises — Instructions](IPA-Approach/INSTRUCTIONS.md)
+2. Start with [General Exercises — Short Phrases](IPA-Approach/01-general-exercises.md), exercises 1-10
 3. Practice distinguishing ˥˩ (falling) from ˩˧ (rising) contours
 4. Use pitch tracker apps to verify accuracy
 5. Progress to complex exercises when pitch control is consistent
@@ -277,7 +277,7 @@ Each approach contains identical content with different notation systems:
 ```
 Intention-Exercises/
 ├── README.md (this file)
-├── ToBI approach/
+├── ToBI-approach/
 │   ├── INSTRUCTIONS.md
 │   ├── 01-general-exercises.md
 │   ├── 02-two-clause-exercises.md
@@ -286,7 +286,7 @@ Intention-Exercises/
 │   ├── 05-power-dynamics.md
 │   ├── ... (30 total specialized aspects)
 │   └── ADVANCED-three-clause-collection.md
-└── IPA Approach/
+└── IPA-Approach/
     ├── INSTRUCTIONS.md
     ├── 01-general-exercises.md
     ├── 02-two-clause-exercises.md
