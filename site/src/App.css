@@ -1,0 +1,265 @@
+:root {
+  --bg: #ffffff;
+  --bg-panel: #f6f6f8;
+  --fg: #1c1c22;
+  --fg-muted: #71717d;
+  --accent: #4f46e5;
+  --accent-soft: #eef2ff;
+  --border: #e4e4ea;
+  --tone: #b45309;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #131318;
+    --bg-panel: #1b1b22;
+    --fg: #ececf1;
+    --fg-muted: #9a9aa6;
+    --accent: #818cf8;
+    --accent-soft: #26264a;
+    --border: #2c2c36;
+    --tone: #fbbf24;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: system-ui, 'Segoe UI', sans-serif;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.6rem 1.2rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.topbar h1 {
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+.approach-toggle {
+  display: flex;
+  gap: 0.25rem;
+  background: var(--bg-panel);
+  border-radius: 999px;
+  padding: 0.2rem;
+}
+
+.approach-toggle button {
+  border: none;
+  background: transparent;
+  color: var(--fg-muted);
+  padding: 0.35rem 1rem;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.approach-toggle button.active {
+  background: var(--accent);
+  color: #fff;
+}
+
+.columns {
+  display: grid;
+  grid-template-columns: 240px 300px 1fr;
+  flex: 1;
+  min-height: 0;
+}
+
+.collections,
+.exercise-list {
+  overflow-y: auto;
+  border-right: 1px solid var(--border);
+  padding: 0.6rem;
+}
+
+.collections button {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  width: 100%;
+  text-align: left;
+  border: none;
+  background: transparent;
+  color: var(--fg);
+  padding: 0.45rem 0.6rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  text-transform: capitalize;
+}
+
+.collections button:hover {
+  background: var(--bg-panel);
+}
+
+.collections button.active {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.collections .count {
+  color: var(--fg-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.exercise-list input {
+  width: 100%;
+  padding: 0.45rem 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg-panel);
+  color: var(--fg);
+  margin-bottom: 0.6rem;
+}
+
+.exercise-list ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.exercise-list li button {
+  display: flex;
+  gap: 0.5rem;
+  width: 100%;
+  text-align: left;
+  border: none;
+  background: transparent;
+  color: var(--fg);
+  padding: 0.4rem 0.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.exercise-list li button:hover {
+  background: var(--bg-panel);
+}
+
+.exercise-list li button.active {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.exercise-list .num {
+  color: var(--fg-muted);
+  min-width: 2ch;
+  font-variant-numeric: tabular-nums;
+}
+
+.practice-pane {
+  overflow-y: auto;
+  padding: 1.4rem 2rem;
+}
+
+.practice .crumb {
+  color: var(--fg-muted);
+  font-size: 0.8rem;
+}
+
+.practice .sentence {
+  font-size: 1.7rem;
+  margin: 0.3rem 0 1.2rem;
+}
+
+.variations {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.variation {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 0.9rem 1.1rem;
+}
+
+.variation h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1rem;
+  color: var(--accent);
+}
+
+.variation dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.25rem 0.8rem;
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.variation dt {
+  color: var(--fg-muted);
+}
+
+.variation dd {
+  margin: 0;
+}
+
+.variation .tobi {
+  font-family: ui-monospace, Consolas, monospace;
+}
+
+.variation .note {
+  color: var(--fg-muted);
+  font-size: 0.85rem;
+  margin: 0.6rem 0 0;
+  font-style: italic;
+}
+
+.ipa-sentence {
+  font-size: 1.05rem;
+  margin: 0 0 0.5rem;
+}
+
+.ipa-marker {
+  background: var(--accent-soft);
+  border-radius: 6px;
+  padding: 0 0.25rem;
+}
+
+.tone-letters {
+  color: var(--tone);
+  font-weight: 700;
+  /* Tone letters need a font that renders Chao letters; prefer ones known to. */
+  font-family: 'Charis SIL', 'Gentium Plus', 'Doulos SIL', 'Segoe UI', sans-serif;
+}
+
+.coming-soon {
+  margin-top: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  color: var(--fg-muted);
+  font-size: 0.85rem;
+}
+
+.coming-soon button {
+  border: 1px dashed var(--border);
+  background: transparent;
+  color: var(--fg-muted);
+  border-radius: 999px;
+  padding: 0.45rem 1rem;
+}
+
+.muted {
+  color: var(--fg-muted);
+}
