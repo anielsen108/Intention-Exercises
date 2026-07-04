@@ -1,0 +1,12 @@
+# Netlify build configuration.
+# The web app lives in site/; Netlify runs the build there and publishes
+# the compiled output (site/dist contains the built index.html).
+
+[build]
+  base = "site"
+  command = "npm run build:content && npm run build"
+  publish = "dist"
+
+[build.environment]
+  # Vite 7 requires Node >= 20.19; pin a known-good major.
+  NODE_VERSION = "22"
