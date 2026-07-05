@@ -1,11 +1,12 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import type { Calibration } from '../analysis/calibration';
 import { scorePerformance, type PerformanceScore } from '../analysis/performance';
 import { approximateTobi, type TobiApproximation } from '../analysis/tobi';
 import type { TrackPoint } from '../analysis/track';
-import { transcribe } from '../analysis/transcribe';
+import { transcribe, type Transcription } from '../analysis/transcribe';
 import { Recorder } from '../audio/recorder';
-import type { Variation } from '../content/types';
+import type { Approach, Variation } from '../content/types';
+import { buildAnnotations, type OverlayMode } from './annotations';
 import { PitchCanvas } from './PitchCanvas';
 import { ipaGloss } from './toneGloss';
 import { TobiNotation, ToneLetters } from './ToneMarks';
@@ -36,6 +37,8 @@ function ScoreRing({ score }: { score: number }) {
 
 interface TakeResult {
   producedLevels: number[];
+  track: TrackPoint[];
+  transcription: Transcription;
   tobi: TobiApproximation;
   performance: PerformanceScore | null;
   audioUrl: string | null;
@@ -45,15 +48,36 @@ interface Props {
   calibration: Calibration | null;
   /** The variation being practiced (its markers become the scoring target). */
   variation: Variation | null;
+  /** The approach being browsed — the overlay selector defaults to it. */
+  approach: Approach;
   onRequestCalibration: () => void;
 }
 
-export function RecorderPanel({ calibration, variation, onRequestCalibration }: Props) {
+const OVERLAY_OPTIONS: { value: OverlayMode; label: string }[] = [
+  { value: 'ipa', label: 'IPA' },
+  { value: 'tobi', label: 'ToBI' },
+  { value: 'both', label: 'Both' },
+  { value: 'off', label: 'Off' },
+];
+
+export function RecorderPanel({ calibration, variation, approach, onRequestCalibration }: Props) {
   const recorder = useRef<Recorder | null>(null);
   const pointsRef = useRef<TrackPoint[]>([]);
   const [running, setRunning] = useState(false);
   const [result, setResult] = useState<TakeResult | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [overlay, setOverlay] = useState<OverlayMode>(approach);
+
+  // Follow the global IPA/ToBI toggle when it changes.
+  useEffect(() => setOverlay(approach), [approach]);
+
+  const annotations = useMemo(
+    () =>
+      result && calibration
+        ? buildAnnotations(result.track, calibration, result.transcription, result.tobi, overlay)
+        : undefined,
+    [result, calibration, overlay],
+  );
 
   useEffect(() => {
     return () => {
@@ -131,7 +155,14 @@ export function RecorderPanel({ calibration, variation, onRequestCalibration }: 
     const tobi = approximateTobi(track, cal);
     const markers = variation?.markers ?? [];
     const performance = markers.length > 0 ? scorePerformance(track, cal, markers) : null;
-    setResult({ producedLevels: transcription.levels, tobi, performance, audioUrl });
+    setResult({
+      producedLevels: transcription.levels,
+      track,
+      transcription,
+      tobi,
+      performance,
+      audioUrl,
+    });
   }
 
   const targetLevels = variation?.markers?.[0]?.levels;
@@ -144,6 +175,22 @@ export function RecorderPanel({ calibration, variation, onRequestCalibration }: 
         </button>
         <span className="record-hint">space</span>
         {error && <span className="error">{error}</span>}
+        {result && !running && (
+          <div className="overlay-select" role="radiogroup" aria-label="Notation overlay">
+            <span className="overlay-label">overlay</span>
+            {OVERLAY_OPTIONS.map((o) => (
+              <button
+                key={o.value}
+                role="radio"
+                aria-checked={overlay === o.value}
+                className={overlay === o.value ? 'active' : ''}
+                onClick={() => setOverlay(o.value)}
+              >
+                {o.label}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
       <PitchCanvas
@@ -151,6 +198,7 @@ export function RecorderPanel({ calibration, variation, onRequestCalibration }: 
         calibration={calibration}
         targetLevels={targetLevels}
         running={running}
+        annotations={annotations}
         ariaLabel={
           result && result.producedLevels.length > 0
             ? `Your last take: ${ipaGloss(result.producedLevels)}`

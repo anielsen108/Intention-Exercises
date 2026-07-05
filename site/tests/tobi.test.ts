@@ -73,6 +73,21 @@ describe('approximateTobi', () => {
     expect(result.boundary).toBe('L-L%');
   });
 
+  it('reports accents aligned per run, including runs with no accent', () => {
+    const track = mkTrack([
+      { from: 0.2, to: 0.9, ms: 250 },
+      { from: 0.9, to: 0.05, ms: 250 },
+      { from: 0, to: 0, ms: 300, voiced: false },
+      { from: 0.7, to: 0.7, ms: 300 },
+    ]);
+    const result = approximateTobi(track, CAL);
+    expect(result.runAccents).toHaveLength(2);
+    expect(result.runAccents[0]).toBe('L+H*'); // big rise into the peak
+    expect(result.runAccents[1]).toBe('H*'); // high level run
+    // accents remains the filtered list
+    expect(result.accents).toEqual(result.runAccents.filter((a) => a !== null));
+  });
+
   it('assigns break indices from pause lengths', () => {
     const track = mkTrack([
       { from: 0.5, to: 0.5, ms: 200 },

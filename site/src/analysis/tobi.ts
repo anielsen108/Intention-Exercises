@@ -18,8 +18,10 @@ import { RUN_OPTS, trackHopSec } from './transcribe';
 export type BoundaryTone = 'L-L%' | 'L-H%' | 'H-H%' | 'H-L%';
 
 export interface TobiApproximation {
-  /** One heuristic accent label per voiced run (may be empty). */
+  /** Heuristic accent labels, non-null only, in run order. */
   accents: string[];
+  /** Accent label (or null) for each voiced run, aligned with the runs. */
+  runAccents: (string | null)[];
   boundary: BoundaryTone | '';
   /** Break indices (2/3/4) for the pauses between voiced runs. */
   breaks: number[];
@@ -52,7 +54,7 @@ function classifyAccent(positions: number[]): string | null {
   return null;
 }
 
-function breakIndex(gapSec: number): number | null {
+export function breakIndex(gapSec: number): number | null {
   if (gapSec > 0.5) return 4;
   if (gapSec > 0.25) return 3;
   if (gapSec > 0.12) return 2;
@@ -62,15 +64,16 @@ function breakIndex(gapSec: number): number | null {
 export function approximateTobi(track: TrackPoint[], cal: Calibration): TobiApproximation {
   const hopSec = trackHopSec(track);
   const runs = voicedRuns(track, { ...RUN_OPTS, hopSec });
-  if (runs.length === 0) return { accents: [], boundary: '', breaks: [], label: '' };
+  if (runs.length === 0) {
+    return { accents: [], runAccents: [], boundary: '', breaks: [], label: '' };
+  }
 
   const runPositions = runs.map((run) =>
     runSemitones(track, run).map((st) => bandPosition(semitoneToHz(st), cal)),
   );
 
-  const accents = runPositions
-    .map((positions) => classifyAccent(positions))
-    .filter((a): a is string => a !== null);
+  const runAccents = runPositions.map((positions) => classifyAccent(positions));
+  const accents = runAccents.filter((a): a is string => a !== null);
 
   const breaks: number[] = [];
   for (let i = 1; i < runs.length; i++) {
@@ -81,7 +84,7 @@ export function approximateTobi(track: TrackPoint[], cal: Calibration): TobiAppr
 
   const boundary = classifyBoundary(finalPositions(runPositions[runPositions.length - 1], hopSec));
   const label = [...accents, boundary].join(' ');
-  return { accents, boundary, breaks, label };
+  return { accents, runAccents, boundary, breaks, label };
 }
 
 /** The last ~250 ms of the final run (or all of it, if shorter). */

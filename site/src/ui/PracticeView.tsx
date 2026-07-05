@@ -122,6 +122,7 @@ export function PracticeView({ exercise, calibration, onRequestCalibration }: Pr
       <RecorderPanel
         calibration={calibration}
         variation={variation}
+        approach={exercise.approach}
         onRequestCalibration={onRequestCalibration}
       />
     </article>

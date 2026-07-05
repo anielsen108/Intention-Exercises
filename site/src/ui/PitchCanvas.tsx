@@ -4,6 +4,7 @@ import { bandPosition } from '../analysis/calibration';
 import type { TrackPoint } from '../analysis/track';
 import { targetPolyline } from '../analysis/compare';
 import { TONE_LETTERS } from '../content/tones';
+import type { CanvasAnnotation } from './annotations';
 
 interface Props {
   /** Live-growing list of pitch points; the component polls it via rAF. */
@@ -14,6 +15,8 @@ interface Props {
   /** Seconds of history to show while recording. */
   windowSec?: number;
   running: boolean;
+  /** Notation overlay drawn on the finished take. */
+  annotations?: CanvasAnnotation[];
   /** Spoken-word summary of the current state for screen readers. */
   ariaLabel?: string;
 }
@@ -31,6 +34,7 @@ export function PitchCanvas({
   targetLevels,
   windowSec = 5,
   running,
+  annotations,
   ariaLabel,
 }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -82,12 +86,16 @@ export function PitchCanvas({
 
       drawTrace(ctx, points, accent, tStart, tCut, xOf, yOf, running);
 
+      if (!running && progress >= 1 && annotations && annotations.length > 0) {
+        drawAnnotations(ctx, annotations, cssVar('--tone'), cssVar('--fg'), w, xOf, yOf);
+      }
+
       if (running || (replaying && progress < 1)) raf = requestAnimationFrame(draw);
     };
 
     raf = requestAnimationFrame(draw);
     return () => cancelAnimationFrame(raf);
-  }, [pointsRef, calibration, targetLevels, windowSec, running]);
+  }, [pointsRef, calibration, targetLevels, windowSec, running, annotations]);
 
   return (
     <canvas
@@ -167,6 +175,32 @@ function drawBands(
     ctx.fillStyle = bands[band];
     ctx.fillText(TONE_LETTERS[band], 8, yTop + h / 10);
   }
+}
+
+function drawAnnotations(
+  ctx: CanvasRenderingContext2D,
+  annotations: CanvasAnnotation[],
+  toneColor: string,
+  fgColor: string,
+  w: number,
+  xOf: (t: number) => number,
+  yOf: (pos: number) => number,
+) {
+  ctx.textBaseline = 'middle';
+  ctx.textAlign = 'center';
+  for (const a of annotations) {
+    const x = Math.min(w - 24, Math.max(24, xOf(a.t)));
+    const y = yOf(a.pos);
+    if (a.kind === 'ipa') {
+      ctx.font = `${a.emphasis ? 26 : 19}px "Gentium Plus Web", serif`;
+      ctx.fillStyle = toneColor;
+    } else {
+      ctx.font = '12px ui-monospace, Consolas, monospace';
+      ctx.fillStyle = a.kind === 'tobi-break' ? `${fgColor}99` : fgColor;
+    }
+    ctx.fillText(a.text, x, y);
+  }
+  ctx.textAlign = 'start';
 }
 
 function drawTargetRibbon(
