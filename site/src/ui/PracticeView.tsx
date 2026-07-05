@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import type { Calibration } from '../analysis/calibration';
 import type { Exercise, Variation } from '../content/types';
-import { levelsToToneLetters } from '../content/tones';
 import { boldSegments } from './format';
 import { RecorderPanel } from './RecorderPanel';
+import { TobiNotation, ToneLetters } from './ToneMarks';
 
 function Bold({ text }: { text: string }) {
   return (
@@ -31,7 +31,7 @@ function IpaSentence({ variation }: { variation: Variation }) {
     parts.push(
       <span key={key++} className="ipa-marker">
         {marker.word}
-        <span className="tone-letters">{levelsToToneLetters(marker.levels)}</span>
+        <ToneLetters levels={marker.levels} />
       </span>,
     );
     rest = rest.slice(idx + marker.word.length);
@@ -66,7 +66,9 @@ function VariationCard({
         {variation.tobi && (
           <>
             <dt>ToBI</dt>
-            <dd className="tobi">{variation.tobi}</dd>
+            <dd>
+              <TobiNotation value={variation.tobi} />
+            </dd>
           </>
         )}
         {variation.stress && (

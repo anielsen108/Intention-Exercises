@@ -5,12 +5,12 @@ import { approximateTobi, type TobiApproximation } from '../analysis/tobi';
 import type { TrackPoint } from '../analysis/track';
 import { transcribe } from '../analysis/transcribe';
 import { Recorder } from '../audio/recorder';
-import { levelsToToneLetters } from '../content/tones';
 import type { Variation } from '../content/types';
 import { PitchCanvas } from './PitchCanvas';
+import { TobiNotation, ToneLetters } from './ToneMarks';
 
 interface TakeResult {
-  producedTones: string;
+  producedLevels: number[];
   tobi: TobiApproximation;
   performance: PerformanceScore | null;
   audioUrl: string | null;
@@ -78,12 +78,10 @@ export function RecorderPanel({ calibration, variation, onRequestCalibration }: 
   function analyse(track: TrackPoint[], audioUrl: string | null) {
     const cal = calibration!;
     const transcription = transcribe(track, cal);
-    const producedTones =
-      transcription.levels.length > 0 ? levelsToToneLetters(transcription.levels) : '';
     const tobi = approximateTobi(track, cal);
     const markers = variation?.markers ?? [];
     const performance = markers.length > 0 ? scorePerformance(track, cal, markers) : null;
-    setResult({ producedTones, tobi, performance, audioUrl });
+    setResult({ producedLevels: transcription.levels, tobi, performance, audioUrl });
   }
 
   const targetLevels = variation?.markers?.[0]?.levels;
@@ -108,22 +106,32 @@ export function RecorderPanel({ calibration, variation, onRequestCalibration }: 
         <div className="take-result">
           <div className="result-row">
             <span className="result-label">You said (IPA)</span>
-            <span className="tone-letters big">
-              {result.producedTones || '— no voiced pitch detected —'}
-            </span>
+            {result.producedLevels.length > 0 ? (
+              <ToneLetters levels={result.producedLevels} big />
+            ) : (
+              <span className="muted">— no voiced pitch detected —</span>
+            )}
             {variation?.markers && variation.markers.length > 0 && (
               <span className="result-target">
                 target:{' '}
-                {variation.markers
-                  .map((m) => `${m.word}${levelsToToneLetters(m.levels)}`)
-                  .join(' … ')}
+                {variation.markers.map((m, i) => (
+                  <span key={i}>
+                    {i > 0 && ' … '}
+                    {m.word}
+                    <ToneLetters levels={m.levels} />
+                  </span>
+                ))}
               </span>
             )}
           </div>
           <div className="result-row">
             <span className="result-label">ToBI (approximate)</span>
-            <span className="tobi">{result.tobi.label || '—'}</span>
-            {variation?.tobi && <span className="result-target">target: {variation.tobi}</span>}
+            {result.tobi.label ? <TobiNotation value={result.tobi.label} /> : <span>—</span>}
+            {variation?.tobi && (
+              <span className="result-target">
+                target: <TobiNotation value={variation.tobi} />
+              </span>
+            )}
           </div>
           {result.performance && (
             <div className="result-row">

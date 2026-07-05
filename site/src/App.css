@@ -214,8 +214,15 @@ body {
   margin: 0;
 }
 
-.variation .tobi {
+.tobi {
   font-family: ui-monospace, Consolas, monospace;
+}
+
+.tone-tip {
+  cursor: help;
+  text-decoration: underline dotted;
+  text-decoration-color: var(--fg-muted);
+  text-underline-offset: 3px;
 }
 
 .variation .note {
