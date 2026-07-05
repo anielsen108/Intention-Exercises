@@ -22,6 +22,8 @@ function navGroupOf(slug: string): (typeof NAV_GROUPS)[number] {
   return 'Aspects 16–30';
 }
 
+const INTRO_KEY = 'vi.introSeen';
+
 export default function App() {
   const collections = useCollections();
   const [approach, setApproach] = useState<Approach>('ipa');
@@ -30,6 +32,8 @@ export default function App() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [calibration, setCalibration] = useState<Calibration | null>(() => loadCalibration());
   const [calibrating, setCalibrating] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [introSeen, setIntroSeen] = useState(() => localStorage.getItem(INTRO_KEY) === '1');
 
   const exercises = useExercises(approach, slug);
 
@@ -49,9 +53,78 @@ export default function App() {
 
   const forApproach = collections?.filter((c) => c.approach === approach) ?? [];
 
+  function dismissIntro() {
+    localStorage.setItem(INTRO_KEY, '1');
+    setIntroSeen(true);
+  }
+
+  const navContent = (
+    <>
+      {collections === null && <p className="muted">Loading…</p>}
+      {NAV_GROUPS.map((group) => {
+        const members = forApproach.filter((c) => navGroupOf(c.slug) === group);
+        if (members.length === 0) return null;
+        return (
+          <div key={group}>
+            <h3 className="nav-group-title">{group}</h3>
+            {members.map((c) => (
+              <button
+                key={c.slug}
+                className={c.slug === slug ? 'active' : ''}
+                onClick={() => {
+                  setSlug(c.slug);
+                  setSelectedId(null);
+                }}
+              >
+                <span>{collectionLabel(c.slug)}</span>
+                <span className="count">{c.exerciseCount}</span>
+              </button>
+            ))}
+          </div>
+        );
+      })}
+    </>
+  );
+
+  const listContent = (
+    <>
+      <input
+        type="search"
+        placeholder="Search text or intention…"
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+      />
+      {visible === null && <p className="muted">Loading…</p>}
+      {visible?.length === 0 && <p className="muted">No matches.</p>}
+      <ul>
+        {visible?.map((ex) => (
+          <li key={ex.id}>
+            <button
+              className={selected?.id === ex.id ? 'active' : ''}
+              onClick={() => {
+                setSelectedId(ex.id);
+                setDrawerOpen(false);
+              }}
+            >
+              <span className="num">{ex.number}</span>
+              <span className="text">{ex.text}</span>
+            </button>
+          </li>
+        ))}
+      </ul>
+    </>
+  );
+
   return (
     <div className="app">
       <header className="topbar">
+        <button
+          className="browse-btn"
+          aria-label="Browse exercises"
+          onClick={() => setDrawerOpen(true)}
+        >
+          ☰
+        </button>
         <h1>Vocal Intentions</h1>
         <button className="calibrate-btn" onClick={() => setCalibrating(true)}>
           {calibration
@@ -77,57 +150,39 @@ export default function App() {
       </header>
 
       <div className="columns">
-        <nav className="collections">
-          {collections === null && <p className="muted">Loading…</p>}
-          {NAV_GROUPS.map((group) => {
-            const members = forApproach.filter((c) => navGroupOf(c.slug) === group);
-            if (members.length === 0) return null;
-            return (
-              <div key={group}>
-                <h3 className="nav-group-title">{group}</h3>
-                {members.map((c) => (
-                  <button
-                    key={c.slug}
-                    className={c.slug === slug ? 'active' : ''}
-                    onClick={() => {
-                      setSlug(c.slug);
-                      setSelectedId(null);
-                    }}
-                  >
-                    <span>{collectionLabel(c.slug)}</span>
-                    <span className="count">{c.exerciseCount}</span>
-                  </button>
-                ))}
-              </div>
-            );
-          })}
-        </nav>
-
-        <section className="exercise-list">
-          <input
-            type="search"
-            placeholder="Search text or intention…"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-          />
-          {visible === null && <p className="muted">Loading…</p>}
-          {visible?.length === 0 && <p className="muted">No matches.</p>}
-          <ul>
-            {visible?.map((ex) => (
-              <li key={ex.id}>
-                <button
-                  className={selected?.id === ex.id ? 'active' : ''}
-                  onClick={() => setSelectedId(ex.id)}
-                >
-                  <span className="num">{ex.number}</span>
-                  <span className="text">{ex.text}</span>
-                </button>
-              </li>
-            ))}
-          </ul>
-        </section>
+        <nav className="collections">{navContent}</nav>
+        <section className="exercise-list">{listContent}</section>
 
         <main className="practice-pane">
+          {!introSeen && (
+            <div className="intro-card">
+              <h2>How it works</h2>
+              <ol>
+                <li>
+                  <strong>Pick an intention</strong> — the same sentence, three different
+                  deliveries.
+                </li>
+                <li>
+                  <strong>Record yourself</strong> (or press Space) and watch your pitch draw
+                  live.
+                </li>
+                <li>
+                  <strong>Compare</strong> — your take comes back in IPA tones and approximate
+                  ToBI, scored against the target.
+                </li>
+              </ol>
+              <div className="intro-actions">
+                {!calibration && (
+                  <button className="record-btn" onClick={() => setCalibrating(true)}>
+                    Calibrate voice
+                  </button>
+                )}
+                <button className="ghost-btn" onClick={dismissIntro}>
+                  Got it
+                </button>
+              </div>
+            </div>
+          )}
           {selected ? (
             <PracticeView
               exercise={selected}
@@ -139,6 +194,15 @@ export default function App() {
           )}
         </main>
       </div>
+
+      {drawerOpen && (
+        <div className="drawer-backdrop" onClick={() => setDrawerOpen(false)}>
+          <div className="drawer" onClick={(e) => e.stopPropagation()}>
+            <nav className="collections">{navContent}</nav>
+            <section className="exercise-list">{listContent}</section>
+          </div>
+        </div>
+      )}
 
       {calibrating && (
         <CalibrationModal

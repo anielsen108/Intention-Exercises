@@ -24,6 +24,20 @@ export function saveCalibration(cal: Cal): void {
 
 type Step = 'intro' | 'low' | 'high' | 'high-rec' | 'done' | 'error';
 
+/** Log-scaled 60–400 Hz meter so users see the hum registering. */
+function LiveMeter({ hz }: { hz: number | null }) {
+  const pos =
+    hz === null ? null : Math.min(1, Math.max(0, Math.log(hz / 60) / Math.log(400 / 60)));
+  return (
+    <div className="live-meter" aria-hidden="true">
+      <div className="live-meter-track">
+        {pos !== null && <div className="live-meter-dot" style={{ left: `${pos * 100}%` }} />}
+      </div>
+      <span className="live-meter-label">{hz !== null ? `${hz.toFixed(0)} Hz` : 'listening…'}</span>
+    </div>
+  );
+}
+
 const STEP_SECONDS = 2.5;
 
 interface Props {
@@ -35,6 +49,7 @@ export function CalibrationModal({ onComplete, onClose }: Props) {
   const [step, setStep] = useState<Step>('intro');
   const [result, setResult] = useState<Cal | null>(null);
   const [countdown, setCountdown] = useState(0);
+  const [liveHz, setLiveHz] = useState<number | null>(null);
   const lowSamples = useRef<number[]>([]);
   const highSamples = useRef<number[]>([]);
   const recorder = useRef<Recorder | null>(null);
@@ -51,6 +66,7 @@ export function CalibrationModal({ onComplete, onClose }: Props) {
     recorder.current = rec;
     rec.onPoint = (p) => {
       if (p.hz !== null && p.clarity > 0.8) into.current.push(p.hz);
+      setLiveHz(p.clarity > 0.6 ? p.hz : null);
     };
     try {
       await rec.start();
@@ -101,9 +117,12 @@ export function CalibrationModal({ onComplete, onClose }: Props) {
         )}
 
         {step === 'low' && (
-          <p className="capturing">
-            Hum your <strong>lowest</strong> comfortable note… {countdown.toFixed(1)}s
-          </p>
+          <>
+            <p className="capturing">
+              Hum your <strong>lowest</strong> comfortable note… {countdown.toFixed(1)}s
+            </p>
+            <LiveMeter hz={liveHz} />
+          </>
         )}
 
         {step === 'high' && (
@@ -116,9 +135,12 @@ export function CalibrationModal({ onComplete, onClose }: Props) {
         )}
 
         {step === 'high-rec' && (
-          <p className="capturing">
-            Hum your <strong>highest</strong> comfortable note… {countdown.toFixed(1)}s
-          </p>
+          <>
+            <p className="capturing">
+              Hum your <strong>highest</strong> comfortable note… {countdown.toFixed(1)}s
+            </p>
+            <LiveMeter hz={liveHz} />
+          </>
         )}
 
         {step === 'done' && result && (

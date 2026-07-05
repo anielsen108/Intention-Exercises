@@ -83,9 +83,17 @@ export function RecorderPanel({ calibration, variation, onRequestCalibration }: 
   if (!calibration) {
     return (
       <div className="recorder-panel">
-        <button className="record-btn" onClick={onRequestCalibration}>
-          Calibrate your voice to start recording
-        </button>
+        <div className="setup-card">
+          <h3>Hear yourself in tones</h3>
+          <p>
+            Record a take and see your pitch drawn live, transcribed into IPA tone letters
+            and approximate ToBI. First, a 6-second calibration maps the five tone bands to{' '}
+            <em>your</em> voice: hum a low note, then a high note.
+          </p>
+          <button className="record-btn" onClick={onRequestCalibration}>
+            Calibrate your voice
+          </button>
+        </div>
       </div>
     );
   }
@@ -110,7 +118,9 @@ export function RecorderPanel({ calibration, variation, onRequestCalibration }: 
       await rec.start();
       setRunning(true);
     } catch {
-      setError('Microphone unavailable — check browser permissions.');
+      setError(
+        'Microphone unavailable. Click the camera/mic icon in your browser’s address bar and allow microphone access, then try again.',
+      );
       recorder.current = null;
     }
   }

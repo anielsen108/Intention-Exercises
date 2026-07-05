@@ -617,3 +617,230 @@ body {
 .muted {
   color: var(--fg-muted);
 }
+
+/* ---------- Tooltips ---------- */
+
+.tip-wrap {
+  position: relative;
+  display: inline-block;
+}
+
+.tip-pop {
+  position: absolute;
+  bottom: calc(100% + 7px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: 250px;
+  background: var(--fg);
+  color: var(--bg);
+  font-family: var(--font-ui);
+  font-weight: 400;
+  font-size: 0.78rem;
+  line-height: 1.4;
+  text-align: left;
+  padding: 0.45rem 0.65rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+  z-index: 30;
+  pointer-events: none;
+  animation: fade-in 120ms ease-out;
+}
+
+/* ---------- Intro & setup cards ---------- */
+
+.intro-card,
+.setup-card {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 1.1rem 1.3rem;
+  margin-bottom: 1.4rem;
+  animation: fade-in 200ms ease-out;
+}
+
+.intro-card h2,
+.setup-card h3 {
+  font-family: var(--font-serif);
+  font-size: 1.15rem;
+  margin: 0 0 0.6rem;
+}
+
+.intro-card ol {
+  margin: 0 0 0.9rem;
+  padding-left: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.9rem;
+}
+
+.setup-card p {
+  margin: 0 0 0.9rem;
+  font-size: 0.9rem;
+  max-width: 34rem;
+}
+
+.intro-actions {
+  display: flex;
+  gap: 0.7rem;
+  align-items: center;
+}
+
+.ghost-btn {
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--fg);
+  border-radius: 999px;
+  padding: 0.5rem 1.2rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+/* ---------- Calibration live meter ---------- */
+
+.live-meter {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.live-meter-track {
+  position: relative;
+  flex: 1;
+  height: 8px;
+  border-radius: 999px;
+  background: linear-gradient(
+    90deg,
+    var(--band1),
+    var(--band2),
+    var(--band3),
+    var(--band4),
+    var(--band5)
+  );
+  opacity: 0.85;
+}
+
+.live-meter-dot {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--bg);
+  border: 3px solid var(--fg);
+}
+
+.live-meter-label {
+  color: var(--fg-muted);
+  font-size: 0.8rem;
+  font-variant-numeric: tabular-nums;
+  min-width: 5.5ch;
+}
+
+/* ---------- Mobile ---------- */
+
+.browse-btn {
+  display: none;
+  border: 1px solid var(--border);
+  background: var(--bg-panel);
+  color: var(--fg);
+  border-radius: 8px;
+  padding: 0.35rem 0.7rem;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-right: 0.8rem;
+}
+
+.drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 12, 10, 0.5);
+  z-index: 20;
+}
+
+.drawer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: min(85vw, 340px);
+  background: var(--bg);
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+  z-index: 21;
+  display: flex;
+  flex-direction: column;
+  animation: drawer-in 200ms ease-out;
+}
+
+@keyframes drawer-in {
+  from {
+    transform: translateX(-12%);
+    opacity: 0.6;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+.drawer .collections,
+.drawer .exercise-list {
+  display: block;
+  border-right: none;
+  overflow-y: visible;
+}
+
+.drawer .collections {
+  border-bottom: 1px solid var(--border);
+}
+
+@media (max-width: 900px) {
+  .columns {
+    grid-template-columns: 1fr;
+  }
+
+  .columns > .collections,
+  .columns > .exercise-list {
+    display: none;
+  }
+
+  .browse-btn {
+    display: inline-flex;
+  }
+
+  .topbar h1 {
+    font-size: 1rem;
+  }
+
+  .calibrate-btn {
+    margin-right: 0.5rem;
+    padding: 0.35rem 0.7rem;
+  }
+
+  .practice-pane {
+    padding: 1.2rem 1rem 2.5rem;
+  }
+
+  .practice .sentence {
+    font-size: 1.8rem;
+  }
+
+  .pitch-canvas {
+    height: 190px;
+  }
+
+  /* comfortable touch targets */
+  .chip,
+  .collections button,
+  .exercise-list li button {
+    padding-top: 0.6rem;
+    padding-bottom: 0.6rem;
+  }
+
+  .take-result {
+    grid-template-columns: 1fr;
+  }
+}
