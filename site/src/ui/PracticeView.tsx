@@ -40,22 +40,9 @@ function IpaSentence({ variation }: { variation: Variation }) {
   return <>{parts}</>;
 }
 
-function VariationCard({
-  variation,
-  active,
-  onSelect,
-}: {
-  variation: Variation;
-  active: boolean;
-  onSelect: () => void;
-}) {
+function VariationDetail({ variation }: { variation: Variation }) {
   return (
-    <div
-      className={`variation ${active ? 'active' : ''}`}
-      onClick={onSelect}
-      role="button"
-      tabIndex={0}
-    >
+    <div className="variation-panel">
       <h3>{variation.intention}</h3>
       {variation.sentence && (
         <p className="ipa-sentence">
@@ -113,19 +100,25 @@ export function PracticeView({ exercise, calibration, onRequestCalibration }: Pr
         </div>
         <h2 className="sentence">“{exercise.text}”</h2>
         {exercise.variations.length > 1 && (
-          <p className="hint">Pick a variation to practice, then record.</p>
+          <p className="hint">Pick an intention to practice, then record.</p>
         )}
       </header>
-      <div className="variations">
-        {exercise.variations.map((v, i) => (
-          <VariationCard
-            key={i}
-            variation={v}
-            active={i === variationIdx}
-            onSelect={() => setVariationIdx(i)}
-          />
-        ))}
-      </div>
+      {exercise.variations.length > 1 && (
+        <div className="variation-chips" role="tablist" aria-label="Intentions">
+          {exercise.variations.map((v, i) => (
+            <button
+              key={i}
+              role="tab"
+              aria-selected={i === variationIdx}
+              className={`chip ${i === variationIdx ? 'active' : ''}`}
+              onClick={() => setVariationIdx(i)}
+            >
+              {v.intention}
+            </button>
+          ))}
+        </div>
+      )}
+      {variation && <VariationDetail variation={variation} />}
       <RecorderPanel
         calibration={calibration}
         variation={variation}

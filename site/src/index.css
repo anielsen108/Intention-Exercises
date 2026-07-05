@@ -1,3 +1,16 @@
 html {
   color-scheme: light dark;
 }
+
+/*
+ * Gentium Plus (SIL OFL, see /fonts/GentiumPlus-OFL.txt): guarantees Chao tone
+ * letters (˥˦˧˨˩) render and ligate into contours on every OS. Used only for
+ * tone notation, so the 326 KB file loads lazily when tone marks first render.
+ */
+@font-face {
+  font-family: 'Gentium Plus Web';
+  src: url('/fonts/GentiumPlus-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}

@@ -7,7 +7,32 @@ import { transcribe } from '../analysis/transcribe';
 import { Recorder } from '../audio/recorder';
 import type { Variation } from '../content/types';
 import { PitchCanvas } from './PitchCanvas';
+import { ipaGloss } from './toneGloss';
 import { TobiNotation, ToneLetters } from './ToneMarks';
+
+function ScoreRing({ score }: { score: number }) {
+  const r = 30;
+  const c = 2 * Math.PI * r;
+  return (
+    <div>
+      <div className={`score-ring s${Math.floor(score / 25)}`}>
+        <svg viewBox="0 0 72 72" width="72" height="72" aria-hidden="true">
+          <circle className="ring-bg" cx="36" cy="36" r={r} />
+          <circle
+            className="ring-fg"
+            cx="36"
+            cy="36"
+            r={r}
+            strokeDasharray={c}
+            strokeDashoffset={c * (1 - score / 100)}
+          />
+        </svg>
+        <span className="score-num">{score}</span>
+      </div>
+      <span className="score-caption">match</span>
+    </div>
+  );
+}
 
 interface TakeResult {
   producedLevels: number[];
@@ -36,6 +61,19 @@ export function RecorderPanel({ calibration, variation, onRequestCalibration }: 
     };
   }, []);
 
+  // Space toggles recording (unless the user is typing in a field).
+  const toggleRef = useRef<() => void>(() => {});
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement;
+      if (e.code !== 'Space' || target.closest('input, textarea, [contenteditable]')) return;
+      e.preventDefault();
+      toggleRef.current();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
+
   // New variation selected → clear the previous take.
   useEffect(() => {
     setResult(null);
@@ -51,6 +89,8 @@ export function RecorderPanel({ calibration, variation, onRequestCalibration }: 
       </div>
     );
   }
+
+  toggleRef.current = () => void toggle();
 
   async function toggle() {
     setError(null);
@@ -92,6 +132,7 @@ export function RecorderPanel({ calibration, variation, onRequestCalibration }: 
         <button className={`record-btn ${running ? 'recording' : ''}`} onClick={toggle}>
           {running ? '■ Stop' : '● Record'}
         </button>
+        <span className="record-hint">space</span>
         {error && <span className="error">{error}</span>}
       </div>
 
@@ -100,10 +141,16 @@ export function RecorderPanel({ calibration, variation, onRequestCalibration }: 
         calibration={calibration}
         targetLevels={targetLevels}
         running={running}
+        ariaLabel={
+          result && result.producedLevels.length > 0
+            ? `Your last take: ${ipaGloss(result.producedLevels)}`
+            : undefined
+        }
       />
 
       {result && !running && (
         <div className="take-result">
+          <div className="result-rows">
           <div className="result-row">
             <span className="result-label">You said (IPA)</span>
             {result.producedLevels.length > 0 ? (
@@ -133,14 +180,8 @@ export function RecorderPanel({ calibration, variation, onRequestCalibration }: 
               </span>
             )}
           </div>
-          {result.performance && (
-            <div className="result-row">
-              <span className="result-label">Contour match</span>
-              <span className={`score s${Math.floor(result.performance.score / 25)}`}>
-                {result.performance.score}
-              </span>
-            </div>
-          )}
+          </div>
+          {result.performance && <ScoreRing score={result.performance.score} />}
           {result.audioUrl && <audio controls src={result.audioUrl} />}
         </div>
       )}

@@ -8,9 +8,18 @@ import './App.css';
 
 function collectionLabel(slug: string): string {
   return slug
-    .replace(/^\d+-/, '')
+    .replace(/^\d+(-\d+)?-/, '')
     .replace(/^SUPPLEMENT-/, '⊕ ')
     .replace(/-/g, ' ');
+}
+
+const NAV_GROUPS = ['Foundation', 'Aspects 4–15', 'Aspects 16–30'] as const;
+
+function navGroupOf(slug: string): (typeof NAV_GROUPS)[number] {
+  const n = parseInt(slug, 10);
+  if (Number.isNaN(n) || n <= 3) return 'Foundation'; // 01-03 + ADVANCED
+  if (n <= 15) return 'Aspects 4–15';
+  return 'Aspects 16–30';
 }
 
 export default function App() {
@@ -70,19 +79,28 @@ export default function App() {
       <div className="columns">
         <nav className="collections">
           {collections === null && <p className="muted">Loading…</p>}
-          {forApproach.map((c) => (
-            <button
-              key={c.slug}
-              className={c.slug === slug ? 'active' : ''}
-              onClick={() => {
-                setSlug(c.slug);
-                setSelectedId(null);
-              }}
-            >
-              <span>{collectionLabel(c.slug)}</span>
-              <span className="count">{c.exerciseCount}</span>
-            </button>
-          ))}
+          {NAV_GROUPS.map((group) => {
+            const members = forApproach.filter((c) => navGroupOf(c.slug) === group);
+            if (members.length === 0) return null;
+            return (
+              <div key={group}>
+                <h3 className="nav-group-title">{group}</h3>
+                {members.map((c) => (
+                  <button
+                    key={c.slug}
+                    className={c.slug === slug ? 'active' : ''}
+                    onClick={() => {
+                      setSlug(c.slug);
+                      setSelectedId(null);
+                    }}
+                  >
+                    <span>{collectionLabel(c.slug)}</span>
+                    <span className="count">{c.exerciseCount}</span>
+                  </button>
+                ))}
+              </div>
+            );
+          })}
         </nav>
 
         <section className="exercise-list">
