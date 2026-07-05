@@ -1,6 +1,9 @@
+import { useEffect, useState } from 'react';
+import type { Calibration } from '../analysis/calibration';
 import type { Exercise, Variation } from '../content/types';
 import { levelsToToneLetters } from '../content/tones';
 import { boldSegments } from './format';
+import { RecorderPanel } from './RecorderPanel';
 
 function Bold({ text }: { text: string }) {
   return (
@@ -37,9 +40,22 @@ function IpaSentence({ variation }: { variation: Variation }) {
   return <>{parts}</>;
 }
 
-function VariationCard({ variation }: { variation: Variation }) {
+function VariationCard({
+  variation,
+  active,
+  onSelect,
+}: {
+  variation: Variation;
+  active: boolean;
+  onSelect: () => void;
+}) {
   return (
-    <div className="variation">
+    <div
+      className={`variation ${active ? 'active' : ''}`}
+      onClick={onSelect}
+      role="button"
+      tabIndex={0}
+    >
       <h3>{variation.intention}</h3>
       {variation.sentence && (
         <p className="ipa-sentence">
@@ -75,7 +91,18 @@ function VariationCard({ variation }: { variation: Variation }) {
   );
 }
 
-export function PracticeView({ exercise }: { exercise: Exercise }) {
+interface PracticeProps {
+  exercise: Exercise;
+  calibration: Calibration | null;
+  onRequestCalibration: () => void;
+}
+
+export function PracticeView({ exercise, calibration, onRequestCalibration }: PracticeProps) {
+  const [variationIdx, setVariationIdx] = useState(0);
+  useEffect(() => setVariationIdx(0), [exercise.id]);
+
+  const variation = exercise.variations[variationIdx] ?? null;
+
   return (
     <article className="practice">
       <header>
@@ -83,18 +110,25 @@ export function PracticeView({ exercise }: { exercise: Exercise }) {
           {exercise.section ? `${exercise.section} · ` : ''}#{exercise.number}
         </div>
         <h2 className="sentence">“{exercise.text}”</h2>
+        {exercise.variations.length > 1 && (
+          <p className="hint">Pick a variation to practice, then record.</p>
+        )}
       </header>
       <div className="variations">
         {exercise.variations.map((v, i) => (
-          <VariationCard key={i} variation={v} />
+          <VariationCard
+            key={i}
+            variation={v}
+            active={i === variationIdx}
+            onSelect={() => setVariationIdx(i)}
+          />
         ))}
       </div>
-      <footer className="coming-soon">
-        <button disabled title="Live pitch analysis arrives in Phase 1">
-          ● Record (coming soon)
-        </button>
-        <span>Live pitch trace + IPA/ToBI transcription of your voice lands in Phase 1–3.</span>
-      </footer>
+      <RecorderPanel
+        calibration={calibration}
+        variation={variation}
+        onRequestCalibration={onRequestCalibration}
+      />
     </article>
   );
 }

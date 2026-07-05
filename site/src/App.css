@@ -263,3 +263,155 @@ body {
 .muted {
   color: var(--fg-muted);
 }
+
+.practice .hint {
+  color: var(--fg-muted);
+  font-size: 0.85rem;
+  margin: 0 0 0.6rem;
+}
+
+.variation {
+  cursor: pointer;
+  border: 1px solid var(--border);
+}
+
+.variation.active {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent);
+}
+
+.calibrate-btn {
+  margin-left: auto;
+  margin-right: 1rem;
+  border: 1px solid var(--border);
+  background: var(--bg-panel);
+  color: var(--fg);
+  border-radius: 999px;
+  padding: 0.35rem 1rem;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.recorder-panel {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.recorder-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.record-btn {
+  border: none;
+  background: var(--accent);
+  color: #fff;
+  border-radius: 999px;
+  padding: 0.55rem 1.4rem;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+.record-btn.recording {
+  background: #dc2626;
+}
+
+.recorder-panel .error {
+  color: #dc2626;
+  font-size: 0.85rem;
+}
+
+.pitch-canvas {
+  width: 100%;
+  height: 180px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg);
+}
+
+.take-result {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 0.9rem 1.1rem;
+}
+
+.result-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+}
+
+.result-label {
+  color: var(--fg-muted);
+  font-size: 0.8rem;
+  min-width: 9rem;
+}
+
+.tone-letters.big {
+  font-size: 1.6rem;
+}
+
+.result-target {
+  color: var(--fg-muted);
+  font-size: 0.85rem;
+}
+
+.score {
+  font-weight: 700;
+  font-size: 1.2rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.score.s0 { color: #dc2626; }
+.score.s1 { color: #ea8a0b; }
+.score.s2 { color: #ca8a04; }
+.score.s3, .score.s4 { color: #16a34a; }
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.modal {
+  background: var(--bg);
+  color: var(--fg);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 1.4rem 1.6rem;
+  max-width: 26rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.modal h2 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.modal button {
+  align-self: flex-start;
+  border: none;
+  background: var(--accent);
+  color: #fff;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+}
+
+.modal .capturing {
+  font-size: 1.05rem;
+}

@@ -1,6 +1,8 @@
 import { useMemo, useState } from 'react';
+import type { Calibration } from './analysis/calibration';
 import type { Approach, Exercise } from './content/types';
 import { useCollections, useExercises } from './hooks/useContent';
+import { CalibrationModal, loadCalibration } from './ui/Calibration';
 import { PracticeView } from './ui/PracticeView';
 import './App.css';
 
@@ -17,6 +19,8 @@ export default function App() {
   const [slug, setSlug] = useState<string | null>('01-general-exercises');
   const [query, setQuery] = useState('');
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [calibration, setCalibration] = useState<Calibration | null>(() => loadCalibration());
+  const [calibrating, setCalibrating] = useState(false);
 
   const exercises = useExercises(approach, slug);
 
@@ -40,6 +44,11 @@ export default function App() {
     <div className="app">
       <header className="topbar">
         <h1>Vocal Intentions</h1>
+        <button className="calibrate-btn" onClick={() => setCalibrating(true)}>
+          {calibration
+            ? `Range ${calibration.lowHz.toFixed(0)}–${calibration.highHz.toFixed(0)} Hz`
+            : 'Calibrate voice'}
+        </button>
         <div className="approach-toggle" role="tablist">
           {(['ipa', 'tobi'] as const).map((a) => (
             <button
@@ -102,12 +111,26 @@ export default function App() {
 
         <main className="practice-pane">
           {selected ? (
-            <PracticeView exercise={selected} />
+            <PracticeView
+              exercise={selected}
+              calibration={calibration}
+              onRequestCalibration={() => setCalibrating(true)}
+            />
           ) : (
             <p className="muted">Pick an exercise.</p>
           )}
         </main>
       </div>
+
+      {calibrating && (
+        <CalibrationModal
+          onComplete={(cal) => {
+            setCalibration(cal);
+            setCalibrating(false);
+          }}
+          onClose={() => setCalibrating(false)}
+        />
+      )}
     </div>
   );
 }

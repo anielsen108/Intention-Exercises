@@ -1,5 +1,14 @@
 # Vocal Intentions — Interactive Web Site Plan
 
+> **Status (2026-07-04):** Phases 0–3 implemented in `site/`.
+> Phase 0: content pipeline (2,512 exercises) + browser UI. Phase 1: mic capture,
+> YIN pitch tracking, live band-scaled pitch canvas, voice calibration.
+> Phase 2: nucleus detection, IPA tone transcription, DTW contour scoring.
+> Phase 3: F0-only approximate ToBI (boundary tones, break indices, heuristic
+> accents) — ASR word alignment for true pitch-accent placement still open.
+> Remaining: Phase 3b (whisper.cpp alignment), Phase 4 polish (CREPE, three-takes
+> blind mode, progress tracking, PWA, iOS testing).
+
 Convert the exercise repository into an interactive practice site where the user picks an exercise, records themselves, and sees a live pitch trace plus an automatic transcription of what they actually produced in IPA tone letters (and an approximate ToBI labeling), compared against the exercise's target notation.
 
 ---
