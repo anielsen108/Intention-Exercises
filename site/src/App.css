@@ -112,8 +112,8 @@ body {
 }
 
 .help-btn {
-  margin-left: auto;
-  margin-right: 0.6rem;
+  margin-left: 0.8rem;
+  flex-shrink: 0;
   width: 30px;
   height: 30px;
   border-radius: 50%;
@@ -133,6 +133,7 @@ body {
 }
 
 .calibrate-btn {
+  margin-left: auto;
   margin-right: 1rem;
   border: 1px solid var(--border);
   background: var(--bg-panel);

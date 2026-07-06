@@ -160,9 +160,6 @@ export default function App() {
             </button>
           ))}
         </nav>
-        <button className="help-btn" aria-label="How it works" title="How it works" onClick={showHelp}>
-          ?
-        </button>
         <button className="calibrate-btn" onClick={() => setCalibrating(true)}>
           {calibration
             ? `Range ${calibration.lowHz.toFixed(0)}–${calibration.highHz.toFixed(0)} Hz`
@@ -186,6 +183,9 @@ export default function App() {
           ))}
         </div>
         )}
+        <button className="help-btn" aria-label="How it works" title="How it works" onClick={showHelp}>
+          ?
+        </button>
       </header>
 
       {view === 'learn' && (
@@ -210,9 +210,11 @@ export default function App() {
               <h2>How it works</h2>
               <ol>
                 <li>
-                  <strong>Set your range</strong> — a 6-second calibration (hum your lowest
-                  note, then your highest) maps the five tone bands to <em>your</em> voice.
-                  Redo it anytime via the Range button up top.
+                  <strong>Set your range</strong> — click the <strong>Range</strong> button
+                  at the top of the page (labeled “Calibrate voice” until your first run)
+                  and follow the 6-second calibration: hum your lowest note, then your
+                  highest. This maps the five tone bands to <em>your</em> voice; click it
+                  again anytime to redo.
                 </li>
                 <li>
                   <strong>Pick an intention</strong> — the same sentence, three different
