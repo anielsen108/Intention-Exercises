@@ -11,8 +11,8 @@ import './App.css';
 type View = 'learn' | 'how' | 'practice';
 
 const VIEWS: { key: View; label: string }[] = [
-  { key: 'learn', label: 'Introduction to Vocal Tones' },
   { key: 'how', label: 'How Tones Convey Intention' },
+  { key: 'learn', label: 'Introduction to Vocal Tones' },
   { key: 'practice', label: 'Practicing Vocal Intentions' },
 ];
 
