@@ -69,6 +69,12 @@ export default function App() {
     setIntroSeen(true);
   }
 
+  function showHelp() {
+    localStorage.removeItem(INTRO_KEY);
+    setIntroSeen(false);
+    setView('practice');
+  }
+
   const navContent = (
     <>
       {collections === null && <p className="muted">Loading…</p>}
@@ -154,6 +160,9 @@ export default function App() {
             </button>
           ))}
         </nav>
+        <button className="help-btn" aria-label="How it works" title="How it works" onClick={showHelp}>
+          ?
+        </button>
         <button className="calibrate-btn" onClick={() => setCalibrating(true)}>
           {calibration
             ? `Range ${calibration.lowHz.toFixed(0)}–${calibration.highHz.toFixed(0)} Hz`
@@ -200,6 +209,11 @@ export default function App() {
             <div className="intro-card">
               <h2>How it works</h2>
               <ol>
+                <li>
+                  <strong>Set your range</strong> — a 6-second calibration (hum your lowest
+                  note, then your highest) maps the five tone bands to <em>your</em> voice.
+                  Redo it anytime via the Range button up top.
+                </li>
                 <li>
                   <strong>Pick an intention</strong> — the same sentence, three different
                   deliveries.
