@@ -653,6 +653,266 @@ body {
   color: var(--fg-muted);
 }
 
+/* ---------- Learn ---------- */
+
+.view-nav {
+  display: flex;
+  gap: 0.2rem;
+  margin-left: 1rem;
+}
+
+.view-nav button {
+  border: none;
+  background: transparent;
+  color: var(--fg-muted);
+  padding: 0.35rem 0.8rem;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.view-nav button.active {
+  color: var(--fg);
+  background: var(--bg-panel);
+  font-weight: 600;
+}
+
+.learn-pane {
+  overflow-y: auto;
+  flex: 1;
+  padding: 1.6rem 2rem 4rem;
+}
+
+.learn-tabs {
+  width: max-content;
+  margin: 0 auto 1.4rem;
+}
+
+.learn-track {
+  max-width: 46rem;
+  margin: 0 auto;
+}
+
+.learn-track h2 {
+  font-family: var(--font-serif);
+  font-size: 1.7rem;
+  margin: 0 0 0.6rem;
+}
+
+.learn-track h3 {
+  font-family: var(--font-serif);
+  font-size: 1.2rem;
+  margin: 2rem 0 0.5rem;
+}
+
+.learn-track p,
+.learn-track li {
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+
+.learn-track code {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 0.05rem 0.3rem;
+  font-size: 0.85em;
+}
+
+.notation-example {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.7rem 1rem;
+  font-size: 1.05rem;
+}
+
+.demo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(215px, 1fr));
+  gap: 0.9rem;
+  margin: 0.9rem 0;
+}
+
+.demo-card {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 0.8rem 0.95rem;
+}
+
+.demo-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.3rem;
+}
+
+.demo-symbol {
+  font-size: 1.5rem;
+}
+
+.demo-symbol.tobi {
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.demo-card h4 {
+  margin: 0.5rem 0 0.25rem;
+  font-size: 0.92rem;
+}
+
+.demo-card p {
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--fg-muted);
+  line-height: 1.45;
+}
+
+.contour-graph {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+.play-btn {
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--accent);
+  border-radius: 999px;
+  padding: 0.3rem 0.75rem;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.play-btn:hover {
+  border-color: var(--accent);
+}
+
+.try-card {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 0.9rem 1.1rem;
+  margin: 0.9rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.try-prompt {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.try-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.record-btn.small {
+  padding: 0.45rem 1.1rem;
+  font-size: 0.85rem;
+}
+
+.try-card .pitch-canvas {
+  height: 130px;
+}
+
+.try-verdict {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.try-verdict.pass {
+  color: var(--ok);
+}
+
+.try-verdict.fail {
+  color: var(--fg-muted);
+}
+
+.quiz-card {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1rem 1.2rem;
+  margin: 0.9rem 0;
+}
+
+.quiz-card h4 {
+  margin: 0 0 0.6rem;
+  font-size: 1rem;
+}
+
+.quiz-progress {
+  color: var(--fg-muted);
+  font-weight: 400;
+  font-size: 0.8rem;
+}
+
+.quiz-prompt p {
+  margin: 0 0 0.5rem;
+}
+
+.quiz-choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.6rem;
+}
+
+.quiz-choice {
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--fg);
+  border-radius: 10px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  font-size: 1rem;
+  font-family: var(--font-tone), var(--font-mono);
+}
+
+.quiz-choice:hover {
+  border-color: var(--accent);
+}
+
+.quiz-choice.right {
+  border-color: var(--ok);
+  color: var(--ok);
+  font-weight: 700;
+}
+
+.quiz-choice.wrong {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+.quiz-feedback p {
+  margin: 0.7rem 0 0.5rem;
+  font-size: 0.9rem;
+}
+
+.quiz-tally {
+  font-size: 1.05rem;
+  margin: 0.3rem 0 0.8rem;
+}
+
+.learn-footnote {
+  color: var(--fg-muted);
+  font-size: 0.82rem;
+  margin-top: 2rem;
+  border-top: 1px solid var(--border);
+  padding-top: 0.8rem;
+}
+
+@media (max-width: 900px) {
+  .learn-pane {
+    padding: 1rem 1rem 3rem;
+  }
+}
+
 /* ---------- Tooltips ---------- */
 
 .tip-wrap {

@@ -3,6 +3,7 @@ import type { Calibration } from './analysis/calibration';
 import type { Approach, Exercise } from './content/types';
 import { useCollections, useExercises } from './hooks/useContent';
 import { CalibrationModal, loadCalibration } from './ui/Calibration';
+import { LearnView } from './ui/learn/LearnView';
 import { PracticeView } from './ui/PracticeView';
 import './App.css';
 
@@ -34,6 +35,7 @@ export default function App() {
   const [calibrating, setCalibrating] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [introSeen, setIntroSeen] = useState(() => localStorage.getItem(INTRO_KEY) === '1');
+  const [view, setView] = useState<'practice' | 'learn'>('practice');
 
   const exercises = useExercises(approach, slug);
 
@@ -118,14 +120,27 @@ export default function App() {
   return (
     <div className="app">
       <header className="topbar">
-        <button
-          className="browse-btn"
-          aria-label="Browse exercises"
-          onClick={() => setDrawerOpen(true)}
-        >
-          ☰
-        </button>
+        {view === 'practice' && (
+          <button
+            className="browse-btn"
+            aria-label="Browse exercises"
+            onClick={() => setDrawerOpen(true)}
+          >
+            ☰
+          </button>
+        )}
         <h1>Vocal Intentions</h1>
+        <nav className="view-nav" aria-label="Section">
+          {(['practice', 'learn'] as const).map((v) => (
+            <button
+              key={v}
+              className={view === v ? 'active' : ''}
+              onClick={() => setView(v)}
+            >
+              {v === 'practice' ? 'Practice' : 'Learn'}
+            </button>
+          ))}
+        </nav>
         <button className="calibrate-btn" onClick={() => setCalibrating(true)}>
           {calibration
             ? `Range ${calibration.lowHz.toFixed(0)}–${calibration.highHz.toFixed(0)} Hz`
@@ -149,6 +164,12 @@ export default function App() {
         </div>
       </header>
 
+      {view === 'learn' ? (
+        <LearnView
+          calibration={calibration}
+          onRequestCalibration={() => setCalibrating(true)}
+        />
+      ) : (
       <div className="columns">
         <nav className="collections">{navContent}</nav>
         <section className="exercise-list">{listContent}</section>
@@ -194,8 +215,9 @@ export default function App() {
           )}
         </main>
       </div>
+      )}
 
-      {drawerOpen && (
+      {drawerOpen && view === 'practice' && (
         <div className="drawer-backdrop" onClick={() => setDrawerOpen(false)}>
           <div className="drawer" onClick={(e) => e.stopPropagation()}>
             <nav className="collections">{navContent}</nav>

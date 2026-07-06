@@ -1,4 +1,4 @@
-import { hzToSemitone } from './track';
+import { hzToSemitone, semitoneToHz } from './track';
 
 /** The speaker's comfortable pitch range, set once via the calibration flow. */
 export interface Calibration {
@@ -46,4 +46,11 @@ export function bandOf(hz: number, cal: Calibration): number {
 /** Map a 0..1 range position to a band 1..5. */
 export function positionToBand(pos: number): number {
   return Math.min(5, Math.max(1, Math.floor(pos * 5) + 1));
+}
+
+/** Center frequency of a tone band (1..5) — the inverse of bandOf. */
+export function levelToHz(level: number, cal: Calibration): number {
+  const lowSt = hzToSemitone(cal.lowHz);
+  const span = hzToSemitone(cal.highHz) - lowSt;
+  return semitoneToHz(lowSt + ((level - 0.5) / 5) * span);
 }
