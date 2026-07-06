@@ -8,24 +8,21 @@ interface Props {
   onNavigate: (view: 'learn' | 'practice') => void;
 }
 
-/** "I thought you'd say that." — one sentence, three deliveries (from the corpus). */
+/** "I thought you'd say that." — one sentence, three deliveries. */
 const THREE_WAYS = [
   {
-    symbol: 'H* L* H+L* L-L%',
     levels: [4, 3, 3, 1],
     title: 'Authoritative',
     description:
-      'Firm pace, narrow pitch, decisive fall on “that”. The melody closes the door: nothing left to discuss.',
+      'Firm pace, narrow pitch, a decisive fall on “that”. The melody closes the door: nothing left to discuss.',
   },
   {
-    symbol: 'L* H* L+H* L-H%',
     levels: [2, 4, 3, 4],
     title: 'Inviting',
     description:
-      'Lighter onset, a lift on “say”, soft rising landing. The melody leaves the door open: your turn.',
+      'Lighter onset, a lift on “say”, a soft rising landing. The melody leaves the door open: your turn.',
   },
   {
-    symbol: 'L* H* L* L-L%',
     levels: [3, 3, 3, 2],
     title: 'Informative',
     description:
@@ -47,23 +44,23 @@ const INTENTION_MAP = [
   {
     levels: [5, 1],
     title: 'Command / certainty',
-    description: 'A clean high fall. In ToBI terms: H* L-L%. “Stop.” “It’s decided.”',
+    description: 'A clean fall from high to low. “Stop.” “It’s decided.” The sound of finality.',
   },
   {
     levels: [1, 5],
     title: 'Genuine question / appeal',
-    description: 'A committed rise. ToBI: L* H-H%. “Really?” “You’re coming?”',
+    description: 'A committed rise, bottom to top. “Really?” “You’re coming?” It hands over the turn.',
   },
   {
     levels: [3, 2],
     title: 'Reassurance / calm',
-    description: 'A small, warm fall from mid — low effort, low stakes. “It’s fine. Breathe.”',
+    description: 'A small, warm fall from the middle — low effort, low stakes. “It’s fine. Breathe.”',
   },
   {
     levels: [5, 1, 5],
     title: 'Irony / reservation',
     description:
-      'The fall–rise. ToBI: L+H* L-H%. The melody contradicts the words — “yeah, great…”',
+      'Down, then back up — the melody takes back what the words gave. “Yeah, great…”',
   },
   {
     levels: [1, 3, 5],
@@ -94,21 +91,22 @@ export function HowTones({ calibration, onNavigate }: Props) {
 
       <h3>One sentence, three messages</h3>
       <p>
-        Take the corpus's own example: <strong>“I thought you'd say that.”</strong> Same six
-        words — three entirely different social moves. Play each melody.
+        Take <strong>“I thought you'd say that.”</strong> Same six words — three entirely
+        different social moves, depending only on the melody they ride. Play each one.
       </p>
       <div className="demo-grid">
         {THREE_WAYS.map((w) => (
-          <ContourDemo key={w.title} {...w} mono calibration={calibration} />
+          <ContourDemo key={w.title} {...w} hideSymbol calibration={calibration} />
         ))}
       </div>
 
       <h3>The four levers</h3>
 
-      <h4>1. Contour — direction is stance</h4>
+      <h4>1. Melody — direction is stance</h4>
       <p>
-        Falls close; rises open; fall–rises hedge. A fall says the utterance is complete and
-        yours to accept; a rise hands the turn to the listener; a fall–rise says “…but”.
+        Falls close; rises open; a dip that comes back up hedges. A fall says the utterance
+        is complete and yours to accept; a rise hands the turn to the listener; a fall–rise
+        says “…but”.
       </p>
       <p>
         <button className="ghost-btn" onClick={() => playContour([5, 1], cal)}>
@@ -118,7 +116,7 @@ export function HowTones({ calibration, onNavigate }: Props) {
           ▶ opening rise
         </button>{' '}
         <button className="ghost-btn" onClick={() => playContour([5, 1, 5], cal)}>
-          ▶ hedging fall–rise
+          ▶ hedging dip
         </button>
       </p>
 
@@ -149,43 +147,40 @@ export function HowTones({ calibration, onNavigate }: Props) {
           )}
         </p>
       </div>
-      <p>
-        In the exercises, stress is marked with <strong>CAPS</strong> (<code>Let it **GO**</code>);
-        in ToBI it's where the starred tone attaches.
-      </p>
 
-      <h4>3. Breaks — grouping is meaning</h4>
+      <h4>3. Pauses — grouping is meaning</h4>
       <p>
         Pauses parcel words into thought-units, and regrouping changes the thought —{' '}
-        <em>“Let's eat, Grandma”</em> versus <em>“Let's eat Grandma”</em>. The exercises mark
-        three grades: <code>,</code> a slight hesitation, <code>/</code> a minor break,{' '}
-        <code>//</code> a full stop of breath. A pause before a word also spotlights it: “I
-        need it… <em>now</em>.”
+        <em>“Let's eat, Grandma”</em> versus <em>“Let's eat Grandma”</em>. A pause can be a
+        slight hesitation, a real break, or a full stop of breath, and each grade says
+        something different. A pause just before a word also spotlights it: “I need it…{' '}
+        <em>now</em>.”
       </p>
 
-      <h4>4. Color — everything that isn't pitch</h4>
+      <h4>4. Color — everything that isn't melody</h4>
       <p>
-        Tempo, breathiness, tension, the smile you can hear. The exercises' performance notes
-        (“breathy tone, slow fall”, “clipped tempo”, “smiling resonance”) live on this lever.
-        The analyzer can't score it yet — but your recordings capture it, so listen back.
+        Tempo, breathiness, tension, the smile you can hear. The same falling “let it go”
+        lands as encouragement when it's breathy and slow, and as an order when it's clipped
+        and hard. Recordings capture this even before you learn to name it — always listen
+        back.
       </p>
 
       <h3>A field guide: intention → melody</h3>
       <p>
-        Six recurring intention families and their signature melodies. These are the shapes
-        you'll meet over and over in the 2,500 exercises.
+        Six intention families you use every day, each with its signature melody. Play them —
+        you'll recognize every one.
       </p>
       <div className="demo-grid">
         {INTENTION_MAP.map((m) => (
-          <ContourDemo key={m.title} {...m} calibration={calibration} />
+          <ContourDemo key={m.title} {...m} hideSymbol calibration={calibration} />
         ))}
       </div>
 
       <h3>Subtext: when melody and words disagree</h3>
       <p>
         Sincerity is alignment — positive words on a settling fall. Irony is deliberate
-        mismatch: positive words on a fall–rise, and the melody wins. Every listener trusts
-        the tone over the text. That's why the same “yeah, great” can be praise{' '}
+        mismatch: positive words on a dip-and-return, and the melody wins. Every listener
+        trusts the tone over the text. That's why the same “yeah, great” can be praise{' '}
         <button className="ghost-btn" onClick={() => playContour([4, 2], cal)}>
           ▶ sincere
         </button>{' '}
@@ -198,13 +193,13 @@ export function HowTones({ calibration, onNavigate }: Props) {
 
       <h3>Where to go from here</h3>
       <p>
-        If the symbols above are new, start with the notation courses. If you can read them,
-        go straight to the exercises: every one gives you a sentence, three intentions, and a
-        microphone.
+        Everything on this page can be written down precisely — there are two notation
+        systems for it, and this site teaches both, then lets you drill them against a live
+        microphone with thousands of exercises.
       </p>
       <div className="intro-actions">
         <button className="ghost-btn" onClick={() => onNavigate('learn')}>
-          ← Introduction to vocal tones
+          Learn the notation →
         </button>
         <button className="record-btn" onClick={() => onNavigate('practice')}>
           Practice vocal intentions →

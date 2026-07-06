@@ -44,7 +44,7 @@ export default function App() {
   const [calibrating, setCalibrating] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [introSeen, setIntroSeen] = useState(() => localStorage.getItem(INTRO_KEY) === '1');
-  const [view, setView] = useState<View>('practice');
+  const [view, setView] = useState<View>('how');
 
   const exercises = useExercises(approach, slug);
 
@@ -138,7 +138,11 @@ export default function App() {
             ☰
           </button>
         )}
-        <h1>Vocal Intentions</h1>
+        <h1>
+          <button className="home-link" onClick={() => setView('how')}>
+            Vocal Intentions
+          </button>
+        </h1>
         <nav className="view-nav" aria-label="Section">
           {VIEWS.map((v) => (
             <button

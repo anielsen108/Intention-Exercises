@@ -10,18 +10,28 @@ interface Props {
   symbol?: string;
   /** Set for ToBI symbols so they render in monospace, not the tone font. */
   mono?: boolean;
+  /** Hide the notation symbol entirely (for non-technical pages). */
+  hideSymbol?: boolean;
   title: string;
   description: string;
   calibration: Calibration | null;
 }
 
 /** A symbol card: shape, name, meaning, and a button to hear it. */
-export function ContourDemo({ levels, symbol, mono, title, description, calibration }: Props) {
+export function ContourDemo({
+  levels,
+  symbol,
+  mono,
+  hideSymbol,
+  title,
+  description,
+  calibration,
+}: Props) {
   return (
     <div className="demo-card">
       <div className="demo-head">
         <span className={`demo-symbol ${mono ? 'tobi' : 'tone-letters'}`}>
-          {symbol ?? levelsToToneLetters(levels)}
+          {hideSymbol ? '' : (symbol ?? levelsToToneLetters(levels))}
         </span>
         <button
           className="play-btn"

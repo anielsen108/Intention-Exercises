@@ -95,11 +95,20 @@ body {
 }
 
 .topbar h1 {
-  font-family: var(--font-serif);
   font-size: 1.15rem;
+  margin: 0;
+}
+
+.home-link {
+  border: none;
+  background: transparent;
+  color: var(--fg);
+  font-family: var(--font-serif);
+  font-size: inherit;
   font-weight: 600;
   letter-spacing: 0.01em;
-  margin: 0;
+  padding: 0;
+  cursor: pointer;
 }
 
 .calibrate-btn {
