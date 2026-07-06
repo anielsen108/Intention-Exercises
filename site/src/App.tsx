@@ -3,9 +3,18 @@ import type { Calibration } from './analysis/calibration';
 import type { Approach, Exercise } from './content/types';
 import { useCollections, useExercises } from './hooks/useContent';
 import { CalibrationModal, loadCalibration } from './ui/Calibration';
+import { HowTones } from './ui/learn/HowTones';
 import { LearnView } from './ui/learn/LearnView';
 import { PracticeView } from './ui/PracticeView';
 import './App.css';
+
+type View = 'learn' | 'how' | 'practice';
+
+const VIEWS: { key: View; label: string }[] = [
+  { key: 'learn', label: 'Introduction to Vocal Tones' },
+  { key: 'how', label: 'How Tones Convey Intention' },
+  { key: 'practice', label: 'Practicing Vocal Intentions' },
+];
 
 function collectionLabel(slug: string): string {
   return slug
@@ -35,7 +44,7 @@ export default function App() {
   const [calibrating, setCalibrating] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [introSeen, setIntroSeen] = useState(() => localStorage.getItem(INTRO_KEY) === '1');
-  const [view, setView] = useState<'practice' | 'learn'>('practice');
+  const [view, setView] = useState<View>('practice');
 
   const exercises = useExercises(approach, slug);
 
@@ -131,13 +140,13 @@ export default function App() {
         )}
         <h1>Vocal Intentions</h1>
         <nav className="view-nav" aria-label="Section">
-          {(['practice', 'learn'] as const).map((v) => (
+          {VIEWS.map((v) => (
             <button
-              key={v}
-              className={view === v ? 'active' : ''}
-              onClick={() => setView(v)}
+              key={v.key}
+              className={view === v.key ? 'active' : ''}
+              onClick={() => setView(v.key)}
             >
-              {v === 'practice' ? 'Practice' : 'Learn'}
+              {v.label}
             </button>
           ))}
         </nav>
@@ -146,6 +155,7 @@ export default function App() {
             ? `Range ${calibration.lowHz.toFixed(0)}–${calibration.highHz.toFixed(0)} Hz`
             : 'Calibrate voice'}
         </button>
+        {view === 'practice' && (
         <div className="approach-toggle" role="tablist">
           {(['ipa', 'tobi'] as const).map((a) => (
             <button
@@ -162,14 +172,21 @@ export default function App() {
             </button>
           ))}
         </div>
+        )}
       </header>
 
-      {view === 'learn' ? (
+      {view === 'learn' && (
         <LearnView
           calibration={calibration}
           onRequestCalibration={() => setCalibrating(true)}
         />
-      ) : (
+      )}
+      {view === 'how' && (
+        <main className="learn-pane">
+          <HowTones calibration={calibration} onNavigate={setView} />
+        </main>
+      )}
+      {view === 'practice' && (
       <div className="columns">
         <nav className="collections">{navContent}</nav>
         <section className="exercise-list">{listContent}</section>
