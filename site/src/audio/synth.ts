@@ -1,6 +1,7 @@
 /** Synthesizes a contour as a soft hum so learners can hear tone shapes. */
 import type { Calibration } from '../analysis/calibration';
 import { levelToHz } from '../analysis/calibration';
+import { resample } from '../analysis/compare';
 
 export const DEFAULT_SYNTH_CAL: Calibration = { lowHz: 110, highHz: 220 };
 
@@ -37,7 +38,11 @@ export function playContour(
 
   const osc = ac.createOscillator();
   osc.type = 'sine';
-  const freqs = levels.map((lvl) => levelToHz(lvl, cal));
+  // Sample relative pitch so an asymmetric baseline agrees with the plotted guide.
+  const freqs = resample(
+    levels,
+    Math.max(2, Math.min(128, Math.round(durSec / 0.01) + 1)),
+  ).map((lvl) => levelToHz(lvl, cal));
   osc.frequency.setValueAtTime(freqs[0], t0);
   if (freqs.length > 1) {
     freqs.slice(1).forEach((hz, i) => {
@@ -50,9 +55,12 @@ export function playContour(
 
   const gain = ac.createGain();
   gain.gain.setValueAtTime(0.0001, t0);
-  gain.gain.exponentialRampToValueAtTime(0.22, t0 + 0.05);
-  gain.gain.setValueAtTime(0.22, t0 + durSec - 0.06);
-  gain.gain.exponentialRampToValueAtTime(0.0001, t0 + durSec + 0.08);
+  gain.gain.exponentialRampToValueAtTime(
+    0.22,
+    t0 + Math.min(0.015, durSec * 0.1),
+  );
+  gain.gain.setValueAtTime(0.22, t0 + durSec - Math.min(0.03, durSec * 0.15));
+  gain.gain.exponentialRampToValueAtTime(0.0001, t0 + durSec);
 
   osc.connect(gain).connect(ac.destination);
   osc.onended = () => {
@@ -62,5 +70,5 @@ export function playContour(
   };
   active.push(osc);
   osc.start(t0);
-  osc.stop(t0 + durSec + 0.12);
+  osc.stop(t0 + durSec + 0.01);
 }

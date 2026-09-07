@@ -3,6 +3,7 @@ import { bandPosition } from './calibration';
 import { transcribe } from './transcribe';
 import { scorePerformance } from './performance';
 import type { TrackPoint } from './track';
+import { MIN_CONTOUR_SEC, hopSeconds, reliablePitch } from './timing';
 
 export interface Feedback {
   title: string;
@@ -29,14 +30,12 @@ export function coachTake(
   cal: Calibration,
   levels?: number[],
 ): Feedback {
-  const voiced = track.filter(
-    (p) => p.hz !== null && p.clarity >= 0.6 && p.rms >= 0.003,
-  );
-  const hop = track.length > 1 ? track[1].t - track[0].t : 0.02;
-  if (voiced.length * hop < 0.25)
+  const voiced = track.filter(reliablePitch);
+  const hop = hopSeconds(track);
+  if (voiced.length * hop < MIN_CONTOUR_SEC - 1e-8)
     return {
       title: 'We need a little more voice',
-      cue: 'Try a comfortable hum for about a second. Move closer to the microphone if the trace stays empty.',
+      cue: 'Too little clear pitch was detected to compare the shape. Try the vowel again at an easy pace, or move closer if the trace stays empty. A short natural delivery is fine.',
       score: null,
       usable: false,
     };
@@ -60,20 +59,21 @@ export function coachTake(
   if (outside > voiced.length * 0.3)
     return {
       title: 'Your voice is outside the saved range',
-      cue: 'Use “Voice range” to set a comfortable low and high again, then repeat this shape.',
+      cue: 'Use “Voice range” to sample your ordinary speech and comfortable low and high again, then repeat this shape.',
       score: null,
       usable: false,
     };
-  const transcription = transcribe(track, cal);
+  const gated = track.map((p) => (reliablePitch(p) ? p : { ...p, hz: null }));
+  const transcription = transcribe(gated, cal);
   if (transcription.runs.length !== 1)
     return {
       title: 'Try one connected sound',
-      cue: 'Several separate voiced stretches were detected. Hum the shape or lengthen the stressed vowel on its own so the comparison has one clear target.',
+      cue: 'Several voiced sounds were detected. Select the sound you meant to compare below the chart, or try the stressed vowel on its own.',
       score: null,
       usable: false,
     };
   const score =
-    scorePerformance(track, cal, [{ word: '', levels }])?.score ?? null;
+    scorePerformance(gated, cal, [{ word: '', levels }])?.score ?? null;
   const positions = voiced.map((p) => bandPosition(p.hz!, cal));
   const edge = Math.max(1, Math.floor(positions.length * 0.15));
   const mean = (xs: number[]) => xs.reduce((a, b) => a + b, 0) / xs.length;

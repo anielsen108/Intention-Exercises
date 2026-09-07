@@ -7,14 +7,13 @@
 import { yinDetect } from './yin';
 import type { TrackPoint } from '../analysis/track';
 
-const FRAME = 2048;
-const HOP = 1024;
+import { ANALYSIS_FRAME_SEC, ANALYSIS_HOP_SEC } from '../analysis/timing';
 
 const WORKLET_SRC = `
 class ViTap extends AudioWorkletProcessor {
   constructor() {
     super();
-    this.block = new Float32Array(1024);
+    this.block = new Float32Array(256);
     this.used = 0;
   }
   process(inputs) {
@@ -92,7 +91,7 @@ export class Recorder {
         return;
       }
       this.stream = stream;
-      this.ctx = new AudioContext();
+      this.ctx = new AudioContext({ sampleRate: 16000 });
       await this.ctx.resume();
       const workletUrl = URL.createObjectURL(
         new Blob([WORKLET_SRC], { type: 'application/javascript' }),
@@ -175,14 +174,21 @@ export class Recorder {
     this.totalSamples += chunk.length;
 
     const sampleRate = this.ctx?.sampleRate ?? 48000;
-    while (this.buffer.length - this.consumed >= FRAME) {
-      const frame = this.buffer.subarray(this.consumed, this.consumed + FRAME);
+    const frameSize = Math.round(sampleRate * ANALYSIS_FRAME_SEC);
+    const hopSize = Math.round(sampleRate * ANALYSIS_HOP_SEC);
+    while (this.buffer.length - this.consumed >= frameSize) {
+      const frame = this.buffer.subarray(
+        this.consumed,
+        this.consumed + frameSize,
+      );
       const { hz, clarity } = yinDetect(frame, sampleRate);
       let sumSq = 0;
       for (let i = 0; i < frame.length; i++) sumSq += frame[i] * frame[i];
       const point: TrackPoint = {
         t:
-          (this.totalSamples - (this.buffer.length - this.consumed)) /
+          (this.totalSamples -
+            (this.buffer.length - this.consumed) +
+            frameSize / 2) /
           sampleRate,
         hz,
         clarity,
@@ -190,7 +196,7 @@ export class Recorder {
       };
       this.track.push(point);
       this.onPoint?.(point);
-      this.consumed += HOP;
+      this.consumed += hopSize;
     }
     // Keep only the unconsumed overlap. Retaining seconds of consumed samples
     // would copy a growing buffer on every worklet message and starve UI timers.

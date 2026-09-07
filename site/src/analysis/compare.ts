@@ -1,5 +1,5 @@
 import type { Calibration } from './calibration';
-import { hzToSemitone } from './track';
+import { semitonePosition } from './calibration';
 
 /** Resample a sequence to n points via linear interpolation. */
 export function resample(values: number[], n: number): number[] {
@@ -87,9 +87,7 @@ export function scoreContour(
   if (producedSt.length === 0 || targetLevels.length === 0) {
     return { score: 0, distance: Infinity };
   }
-  const lowSt = hzToSemitone(cal.lowHz);
-  const span = hzToSemitone(cal.highHz) - lowSt;
-  const produced = producedSt.map((st) => Math.min(1, Math.max(0, (st - lowSt) / span)));
+  const produced = producedSt.map((st) => semitonePosition(st, cal));
 
   const distance = dtwDistance(produced, targetPolyline(targetLevels));
   const score = Math.round(100 * Math.max(0, 1 - distance / WORST_DISTANCE));

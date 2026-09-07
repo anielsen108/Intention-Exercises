@@ -25,6 +25,10 @@ describe('browser storage fallback', () => {
       { lowHz: 100, highHz: 101 },
       { lowHz: -1, highHz: 200 },
       { lowHz: '110', highHz: 220 },
+      { lowHz: 100, highHz: 240, version: 2 },
+      { lowHz: 100, highHz: 240, midHz: 300, version: 2 },
+      { lowHz: 100, highHz: 240, midHz: 150, version: 3 },
+      { lowHz: 100, highHz: 240, midHz: '150', version: 2 },
     ]) {
       vi.stubGlobal('localStorage', { getItem: () => JSON.stringify(cal) });
       expect(loadCalibration()).toBeNull();

@@ -162,8 +162,15 @@ export function HowTones({
         <p>
           The graph shows detected pitch over time. In “Isolate the shape”, a
           similarity score compares a single voiced stretch with a pitch guide
-          fitted to your range. Short, unclear, or ambiguous recordings receive
-          a retry cue instead of a score.
+          fitted to your range and the duration of your sound. Select the sound
+          to compare if several are detected. Unclear or very brief input
+          receives a retry cue instead of a score.
+        </p>
+        <p>
+          Voice calibration starts with ordinary speech to find your medium
+          pitch, then two easy low and high samples. The guide offers quick and
+          slower practice durations; your recorded pitch shape is compared
+          independently of that pace.
         </p>
         <p>
           The app does not recognize your words or judge your emotion,

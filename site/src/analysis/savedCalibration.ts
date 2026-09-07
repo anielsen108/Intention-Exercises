@@ -8,9 +8,18 @@ export function loadCalibration(): Cal | null {
     return (
       Number.isFinite(cal.lowHz) &&
       Number.isFinite(cal.highHz) &&
-      cal.lowHz >= 50 &&
+      cal.lowHz >= 30 &&
       cal.highHz <= 1500 &&
-      12 * Math.log2(cal.highHz / cal.lowHz) >= 4
+      12 * Math.log2(cal.highHz / cal.lowHz) >= 4 &&
+      (cal.version === undefined || cal.version === 2) &&
+      (cal.midHz === undefined
+        ? cal.version === undefined
+        : cal.version === 2 &&
+          Number.isFinite(cal.midHz) &&
+          cal.midHz >= 50 &&
+          cal.midHz <= 800 &&
+          12 * Math.log2(cal.midHz / cal.lowHz) >= 2.5 - 1e-8 &&
+          12 * Math.log2(cal.highHz / cal.midHz) >= 2.5 - 1e-8)
     );
   });
 }

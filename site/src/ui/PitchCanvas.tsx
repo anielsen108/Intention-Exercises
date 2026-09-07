@@ -1,6 +1,12 @@
 import { useEffect, useRef, type MutableRefObject } from 'react';
 import type { Calibration } from '../analysis/calibration';
-import { bandPosition } from '../analysis/calibration';
+import { bandPosition, LEVEL_NAMES } from '../analysis/calibration';
+import {
+  chartDomain,
+  reliablePitch,
+  formatDuration,
+  type SoundRegion,
+} from '../analysis/timing';
 import type { TrackPoint } from '../analysis/track';
 import { targetPolyline } from '../analysis/compare';
 import type { CanvasAnnotation } from './annotations';
@@ -14,6 +20,8 @@ interface Props {
   /** Seconds of history to show while recording. */
   windowSec?: number;
   running: boolean;
+  focusRegion?: SoundRegion;
+  fullTake?: boolean;
   /** Notation overlay drawn on the finished take. */
   annotations?: CanvasAnnotation[];
   /** Spoken-word summary of the current state for screen readers. */
@@ -21,7 +29,6 @@ interface Props {
 }
 
 const BAND_VARS = ['--band1', '--band2', '--band3', '--band4', '--band5'];
-const REPLAY_MS = 700;
 
 function cssVar(name: string): string {
   return getComputedStyle(document.documentElement)
@@ -33,13 +40,14 @@ export function PitchCanvas({
   pointsRef,
   calibration,
   targetLevels,
-  windowSec = 5,
+  windowSec = 2,
   running,
+  focusRegion,
+  fullTake = false,
   annotations,
   ariaLabel,
 }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const wasRunning = useRef(false);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -47,19 +55,11 @@ export function PitchCanvas({
     if (!canvas || !ctx) return;
     let raf = 0;
 
-    // On stop, replay the take: the trace draws itself on over REPLAY_MS.
-    const replaying =
-      wasRunning.current &&
-      !running &&
-      !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    wasRunning.current = running;
-    const replayStart = performance.now();
-
     const bands = BAND_VARS.map(cssVar);
     const muted = cssVar('--fg-muted');
     const accent = cssVar('--accent');
 
-    const draw = (now: number) => {
+    const draw = () => {
       const dpr = window.devicePixelRatio || 1;
       const w = canvas.clientWidth;
       const h = canvas.clientHeight;
@@ -70,44 +70,59 @@ export function PitchCanvas({
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.clearRect(0, 0, w, h);
 
-      drawBands(ctx, w, h, bands, muted);
+      const plotH = h - 26;
+      drawBands(ctx, w, plotH, bands, muted);
 
       const points = pointsRef.current;
-      const voiced = !running
-        ? points.filter((p) => p.hz !== null && p.clarity >= 0.6)
-        : [];
-      const tEnd = running
-        ? (points.at(-1)?.t ?? 0)
-        : (voiced.at(-1)?.t ?? points.at(-1)?.t ?? 0);
-      const tStart = running
-        ? Math.max(0, tEnd - windowSec)
-        : (voiced[0]?.t ?? 0);
-      const span = running ? windowSec : Math.max(tEnd - tStart, 0.001);
-      const xOf = (t: number) => 32 + ((t - tStart) / span) * (w - 56);
-      const yOf = (pos: number) => h - pos * h;
-
-      if (!running && targetLevels && targetLevels.length > 0) {
-        drawTargetRibbon(ctx, w, targetLevels, cssVar('--tone'), yOf);
+      const domain = chartDomain(
+        points,
+        running,
+        windowSec,
+        focusRegion,
+        fullTake,
+      );
+      const tStart = domain.start,
+        span = domain.end - domain.start;
+      const xOf = (t: number) => 64 + ((t - tStart) / span) * (w - 84);
+      const yOf = (pos: number) => plotH - pos * plotH;
+      canvas.dataset.timeStart = String(tStart);
+      canvas.dataset.timeEnd = String(domain.end);
+      if (!running && targetLevels?.length) {
+        drawTargetRibbon(
+          ctx,
+          xOf(focusRegion?.start ?? tStart),
+          xOf(focusRegion?.end ?? domain.end),
+          targetLevels,
+          cssVar('--tone'),
+          yOf,
+        );
       }
-
-      const progress = replaying
-        ? Math.min(1, (now - replayStart) / REPLAY_MS)
-        : 1;
-      const tCut = tStart + span * progress;
-
+      ctx.fillStyle = muted;
+      ctx.font = '10px "Segoe UI", sans-serif';
+      ctx.textBaseline = 'middle';
+      for (const fraction of [0, 0.5, 1]) {
+        ctx.textAlign =
+          fraction === 0 ? 'left' : fraction === 1 ? 'right' : 'center';
+        const t = tStart + span * fraction;
+        const label = fullTake
+          ? formatDuration(t)
+          : formatDuration(span * fraction);
+        ctx.fillText(label, xOf(t), h - 10);
+      }
+      ctx.textAlign = 'start';
       drawTrace(
         ctx,
         points,
         calibration,
         accent,
         tStart,
-        tCut,
+        domain.end,
         xOf,
         yOf,
         running,
       );
 
-      if (!running && progress >= 1 && annotations && annotations.length > 0) {
+      if (!running && annotations && annotations.length > 0) {
         drawAnnotations(
           ctx,
           annotations,
@@ -119,8 +134,7 @@ export function PitchCanvas({
         );
       }
 
-      if (running || (replaying && progress < 1))
-        raf = requestAnimationFrame(draw);
+      if (running) raf = requestAnimationFrame(draw);
     };
 
     raf = requestAnimationFrame(draw);
@@ -133,7 +147,16 @@ export function PitchCanvas({
       cancelAnimationFrame(raf);
       resize.disconnect();
     };
-  }, [pointsRef, calibration, targetLevels, windowSec, running, annotations]);
+  }, [
+    pointsRef,
+    calibration,
+    targetLevels,
+    windowSec,
+    running,
+    annotations,
+    focusRegion,
+    fullTake,
+  ]);
 
   return (
     <canvas
@@ -169,12 +192,12 @@ function drawTrace(
   let last: { x: number; y: number } | null = null;
   for (const p of points) {
     if (p.t < tStart || p.t > tCut) continue;
-    if (p.hz === null || p.clarity < 0.6) {
+    if (!reliablePitch(p)) {
       pen = false;
       continue;
     }
     const x = xOf(p.t);
-    const y = yOf(bandPosition(p.hz, calibration));
+    const y = yOf(bandPosition(p.hz!, calibration));
     if (pen) ctx.lineTo(x, y);
     else ctx.moveTo(x, y);
     pen = true;
@@ -214,8 +237,7 @@ function drawBands(
     ctx.stroke();
     // Tone-letter axis label at the band center.
     ctx.fillStyle = muted;
-    if (band === 0 || band === 2 || band === 4)
-      ctx.fillText(['low', '', 'mid', '', 'high'][band], 5, yTop + h / 10);
+    ctx.fillText(LEVEL_NAMES[band].toLowerCase(), 5, yTop + h / 10);
   }
 }
 
@@ -247,7 +269,8 @@ function drawAnnotations(
 
 function drawTargetRibbon(
   ctx: CanvasRenderingContext2D,
-  w: number,
+  xStart: number,
+  xEnd: number,
   targetLevels: number[],
   muted: string,
   yOf: (pos: number) => number,
@@ -259,7 +282,7 @@ function drawTargetRibbon(
   ctx.lineCap = 'round';
   ctx.beginPath();
   line.forEach((pos, i) => {
-    const x = 32 + (i / (line.length - 1)) * (w - 56);
+    const x = xStart + (i / (line.length - 1)) * (xEnd - xStart);
     if (i === 0) ctx.moveTo(x, yOf(pos));
     else ctx.lineTo(x, yOf(pos));
   });

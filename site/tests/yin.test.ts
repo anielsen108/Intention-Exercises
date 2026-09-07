@@ -5,7 +5,8 @@ const SR = 48000;
 
 function sine(freq: number, n = 2048, amp = 0.6): Float32Array {
   const out = new Float32Array(n);
-  for (let i = 0; i < n; i++) out[i] = amp * Math.sin((2 * Math.PI * freq * i) / SR);
+  for (let i = 0; i < n; i++)
+    out[i] = amp * Math.sin((2 * Math.PI * freq * i) / SR);
   return out;
 }
 
@@ -37,7 +38,8 @@ describe('yinDetect', () => {
     const frame = new Float32Array(2048);
     for (let i = 0; i < 2048; i++) {
       const t = (2 * Math.PI * f * i) / SR;
-      frame[i] = 0.5 * Math.sin(t) + 0.3 * Math.sin(2 * t) + 0.15 * Math.sin(3 * t);
+      frame[i] =
+        0.5 * Math.sin(t) + 0.3 * Math.sin(2 * t) + 0.15 * Math.sin(3 * t);
     }
     const { hz } = yinDetect(frame, SR);
     expect(Math.abs(hz! - f)).toBeLessThan(f * 0.01);
@@ -55,8 +57,8 @@ describe('yinDetect', () => {
   });
 
   it('respects the fMin/fMax search range', () => {
-    // 50 Hz is below the default 60 Hz floor: must not report it.
-    const { hz, clarity } = yinDetect(sine(50), SR);
+    // 50 Hz is below the explicitly requested 60 Hz floor: must not report it.
+    const { hz, clarity } = yinDetect(sine(50), SR, { fMin: 60 });
     if (hz !== null) {
       expect(clarity).toBeLessThan(0.9);
     }

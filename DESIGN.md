@@ -27,6 +27,12 @@ The page uses warm paper, dark green, a locally bundled serif for spoken lines, 
 
 The training loop is **hear → isolate → speak → compare → reflect**. Progress records an explicit self-assessment, not a claimed level of mastery. Learners can repeat a delivery, jump within a session, resume unfinished work, or use the corpus independently.
 
+## Speaking calibration and short deliveries
+
+Medium now comes from the median of an ordinary-speech sample. Comfortable low and high samples set the outer reference levels, and learners can hear all five levels before saving. Existing two-note profiles remain usable and receive a refinement prompt.
+
+Guide durations are 200, 350 and 700 ms, with a recorded-duration option. Comparison charts focus on the detected sound, show milliseconds and offer the full recording timeline. Multiple substantial sounds require a focus choice. The analysis uses 60 ms frames at 10 ms intervals and accepts clear voiced contours from 120 ms. Isolated takes can stop after a quiet gap. See [the research and timing notes](docs/speech-calibration-and-timing.md) for evidence and limits.
+
 ## Verification
 
 The test suite covers the parsers, pitch detection, transcription, scoring, signal-quality feedback, guided curriculum, storage fallbacks, and microphone cancellation. The content build reports its inventory and parsing issues. Browser verification covers the guided sequence, persistence, library filtering, notation navigation, keyboard interaction, calibration, playback, and responsive layouts. Synthetic audio is used for repeatable recorder checks; that does not substitute for checking a physical microphone or every mobile browser.

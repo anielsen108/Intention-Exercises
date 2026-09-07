@@ -1,7 +1,6 @@
 import type { Calibration } from './calibration';
-import { positionToBand } from './calibration';
+import { positionToBand, semitonePosition } from './calibration';
 import {
-  hzToSemitone,
   runSemitones,
   voicedRuns,
   type TrackPoint,
@@ -30,11 +29,17 @@ export function trackHopSec(track: TrackPoint[]): number {
 }
 
 /** Transcribe a recorded pitch track into IPA tone levels. */
-export function transcribe(track: TrackPoint[], cal: Calibration): Transcription {
+export function transcribe(
+  track: TrackPoint[],
+  cal: Calibration,
+): Transcription {
   const runs = voicedRuns(track, { ...RUN_OPTS, hopSec: trackHopSec(track) });
-  if (runs.length === 0) return { levels: [], nucleusIndex: -1, runs, runLevels: [] };
+  if (runs.length === 0)
+    return { levels: [], nucleusIndex: -1, runs, runLevels: [] };
 
-  const runLevels = runs.map((run) => contourLevels(runSemitones(track, run), cal));
+  const runLevels = runs.map((run) =>
+    contourLevels(runSemitones(track, run), cal),
+  );
   const nucleusIndex = pickNucleus(track, runs);
   return { levels: runLevels[nucleusIndex], nucleusIndex, runs, runLevels };
 }
@@ -67,10 +72,8 @@ export function contourLevels(semitones: number[], cal: Calibration): number[] {
   if (semitones.length === 0) return [];
   const anchors = zigzagAnchors(semitones, PROMINENCE_ST).slice(0, MAX_ANCHORS);
 
-  const lowSt = hzToSemitone(cal.lowHz);
-  const span = hzToSemitone(cal.highHz) - lowSt;
   const levels = anchors.map((i) => {
-    const pos = Math.min(1, Math.max(0, (semitones[i] - lowSt) / span));
+    const pos = semitonePosition(semitones[i], cal);
     return positionToBand(pos);
   });
 

@@ -53,6 +53,11 @@ export function PracticeView({
   const [markerIdx, setMarkerIdx] = useState(0);
   const [mode, setMode] = useState<'shape' | 'sentence'>('shape');
   const [busy, setBusy] = useState(false);
+  const [timedSound, setTimedSound] = useState<{
+    key: string;
+    duration: number;
+  } | null>(null);
+  const timingKey = `${variationIdx}/${markerIdx}/${mode}`;
   const [reflection, setReflection] = useState<string | null>(null);
   const variation = exercise.variations[variationIdx];
   if (!variation)
@@ -162,6 +167,11 @@ export function PracticeView({
                 levels={preview}
                 calibration={calibration}
                 disabled={busy}
+                takeDuration={
+                  timedSound?.key === timingKey
+                    ? timedSound.duration
+                    : undefined
+                }
               />
             ) : (
               <p>
@@ -191,15 +201,18 @@ export function PracticeView({
             )}
           </section>
           <RecorderPanel
-            key={`${variationIdx}/${markerIdx}/${mode}/${calibration?.lowHz}/${calibration?.highHz}`}
+            key={`${variationIdx}/${markerIdx}/${mode}/${calibration?.lowHz}/${calibration?.highHz}/${calibration?.midHz}`}
             calibration={calibration}
             targetLevels={canScore ? marker.levels : undefined}
             prompt={
               canScore
-                ? `Hum the shape, or stretch the stressed vowel in “${marker.word}”.`
+                ? `Say the stressed vowel naturally, or hum the shape in “${marker.word}”.`
                 : `Say the whole line: ${variation.intention.toLowerCase()}.`
             }
             onRequestCalibration={onRequestCalibration}
+            onSoundDuration={(duration) =>
+              setTimedSound(duration ? { key: timingKey, duration } : null)
+            }
             onBusy={handleBusy}
           />
           <section className="reflection-panel">

@@ -2166,3 +2166,178 @@ dialog.modal::backdrop {
     display: block;
   }
 }
+/* Personal speaking calibration and speech-scale timing. */
+dialog.calibration-modal {
+  width: min(570px, calc(100vw - 30px));
+}
+.calibration-progress {
+  list-style: none;
+  display: flex;
+  gap: 22px;
+  padding: 0;
+  margin: 8px 0 26px;
+}
+.calibration-progress li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--fg-muted);
+  font-size: 12px;
+}
+.calibration-progress li span {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+}
+.calibration-progress [aria-current='step'] {
+  color: var(--accent);
+  font-weight: 700;
+}
+.calibration-progress [aria-current='step'] span,
+.calibration-progress .complete span {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
+}
+.calibration-passage {
+  margin: 20px 0;
+  padding: 18px 20px;
+  border-left: 3px solid var(--accent);
+  background: var(--bg-panel);
+  font: 420 21px/1.5 var(--font-serif);
+}
+.calibration-listening {
+  color: var(--accent);
+  margin: 18px 0 12px;
+  font-weight: 600;
+}
+.calibration-modal progress {
+  width: 100%;
+  height: 8px;
+  accent-color: var(--accent);
+}
+.calibration-meter {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--fg-muted);
+  margin-top: 8px;
+}
+.calibration-levels {
+  display: grid;
+  gap: 6px;
+  margin: 18px 0;
+}
+.calibration-levels button {
+  display: grid;
+  grid-template-columns: 24px 1fr 70px 18px;
+  align-items: center;
+  gap: 8px;
+  text-align: left;
+  padding: 11px 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg-panel);
+  font-size: 13px;
+}
+.calibration-levels button[aria-pressed='true'] {
+  background: var(--accent);
+  color: white;
+}
+.calibration-levels .level-number {
+  opacity: 0.65;
+}
+.calibration-retry {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 16px;
+}
+.guide-duration {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  color: var(--fg-muted);
+}
+.guide-duration select {
+  max-width: 100%;
+  font: inherit;
+  color: var(--fg);
+  border: 1px solid var(--border);
+  background: var(--bg);
+  padding: 8px;
+  border-radius: 5px;
+}
+.player-controls {
+  flex-wrap: wrap;
+}
+.chart-timing {
+  margin: 10px 0 16px;
+  font-size: 12px;
+}
+.chart-timing-summary {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.chart-timing strong {
+  color: var(--accent);
+}
+.sound-picker {
+  display: flex;
+  gap: 7px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+  align-items: center;
+}
+.sound-picker span {
+  flex-basis: 100%;
+  color: var(--fg-muted);
+}
+.sound-picker button {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 7px 9px;
+  font-size: 11px;
+}
+.sound-picker button.active {
+  background: var(--accent);
+  color: white;
+}
+.auto-stop {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+  margin-top: 16px;
+}
+.auto-stop input {
+  accent-color: var(--accent);
+}
+.auto-stop span {
+  color: var(--fg-muted);
+  font-size: 11px;
+}
+@media (max-width: 440px) {
+  .guide-duration {
+    width: 100%;
+    justify-content: space-between;
+  }
+  .guide-duration select {
+    max-width: 70%;
+  }
+  .calibration-progress {
+    gap: 14px;
+  }
+  .calibration-passage {
+    font-size: 18px;
+  }
+}

@@ -1,8 +1,9 @@
-import { useEffect, useRef, useState } from 'react';
-import type { Calibration } from '../analysis/calibration';
+import { useEffect, useId, useRef, useState } from 'react';
+import { LEVEL_NAMES, type Calibration } from '../analysis/calibration';
 import { describeShape } from '../analysis/coaching';
 import { playContour, stopContour } from '../audio/synth';
 import { targetPolyline } from '../analysis/compare';
+import { GUIDE_DURATIONS, formatDuration } from '../analysis/timing';
 
 export function ContourPlayer({
   levels,
@@ -10,15 +11,20 @@ export function ContourPlayer({
   compact = false,
   label = 'Hear the pitch guide',
   disabled = false,
+  takeDuration,
 }: {
   levels: number[];
   calibration: Calibration | null;
   compact?: boolean;
   label?: string;
   disabled?: boolean;
+  takeDuration?: number;
 }) {
   const [playing, setPlaying] = useState(false);
-  const [slow, setSlow] = useState(false);
+  const [pace, setPace] = useState('0.35');
+  const duration =
+    pace === 'take' && takeDuration ? takeDuration : Number(pace) || 0.35;
+  const paceId = useId();
   const [error, setError] = useState(false);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   useEffect(
@@ -31,10 +37,11 @@ export function ContourPlayer({
   useEffect(() => {
     setPlaying(false);
     stopContour();
-  }, [levels]);
+    if (timer.current) clearTimeout(timer.current);
+  }, [levels, calibration, takeDuration, disabled]);
   const line = targetPolyline(levels, 48);
   const points = line
-    .map((p, i) => `${40 + (i / 47) * 480},${146 - p * 112}`)
+    .map((p, i) => `${64 + (i / 47) * 456},${146 - p * 112}`)
     .join(' ');
   function play() {
     setError(false);
@@ -44,13 +51,12 @@ export function ContourPlayer({
       return;
     }
     try {
-      const duration = slow ? 1.9 : 1.15;
       playContour(levels, calibration ?? undefined, duration);
       setPlaying(true);
       if (timer.current) clearTimeout(timer.current);
       timer.current = setTimeout(
         () => setPlaying(false),
-        (duration + 0.15) * 1000,
+        (duration + 0.06) * 1000,
       );
     } catch {
       setError(true);
@@ -62,31 +68,35 @@ export function ContourPlayer({
         {[0.1, 0.3, 0.5, 0.7, 0.9].map((p) => (
           <line
             key={p}
-            x1="40"
+            x1="64"
             x2="520"
             y1={146 - p * 112}
             y2={146 - p * 112}
             className="guide-grid"
           />
         ))}
-        <text x="2" y="48" className="axis-label">
-          high
-        </text>
-        <text x="5" y="139" className="axis-label">
-          low
-        </text>
+        {LEVEL_NAMES.map((name, i) => (
+          <text
+            key={name}
+            x="2"
+            y={149 - ((i + 0.5) / 5) * 112}
+            className="axis-label"
+          >
+            {name.toLowerCase()}
+          </text>
+        ))}
         <polyline points={points} className="guide-shadow" />
         <polyline points={points} className="guide-line" />
         {playing && (
           <polyline
-            key={String(slow)}
+            key={String(duration)}
             points={points}
             className="guide-playhead"
             pathLength="1"
-            style={{ animationDuration: `${slow ? 1.9 : 1.15}s` }}
+            style={{ animationDuration: `${duration}s` }}
           />
         )}
-        <text x="40" y="172" className="axis-label">
+        <text x="64" y="172" className="axis-label">
           start
         </text>
         <text x="496" y="172" className="axis-label">
@@ -103,19 +113,31 @@ export function ContourPlayer({
           <span aria-hidden="true">{playing ? '■' : '▶'}</span>{' '}
           {playing ? 'Stop guide' : label}
         </button>
-        <button
-          className="speed-button"
-          aria-pressed={slow}
-          disabled={playing || disabled}
-          onClick={() => setSlow(!slow)}
-        >
-          {slow ? 'Slow · 0.6×' : 'Speed · 1×'}
-        </button>
+        <label className="guide-duration" htmlFor={paceId}>
+          Guide duration
+          <select
+            id={paceId}
+            value={pace === 'take' && !takeDuration ? '0.35' : pace}
+            disabled={playing || disabled}
+            onChange={(e) => setPace(e.target.value)}
+          >
+            {GUIDE_DURATIONS.map((item) => (
+              <option key={item.seconds} value={String(item.seconds)}>
+                {item.label} · {formatDuration(item.seconds)}
+              </option>
+            ))}
+            {takeDuration && (
+              <option value="take">
+                Match my sound · {formatDuration(takeDuration)}
+              </option>
+            )}
+          </select>
+        </label>
       </div>
       {!compact && (
         <p className="microcopy">
-          A synthesized hum of the pitch shape. Try it on a hum, then on the
-          words.
+          A synthesized pitch shape. Choose a pace, then try the word naturally.
+          Your take is compared by shape; guide duration isn’t a timing test.
         </p>
       )}
       {error && (

@@ -1,11 +1,13 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Recorder } from '../src/audio/recorder';
+import { soundRegions, regionTrack } from '../src/analysis/timing';
+import { coachTake } from '../src/analysis/coaching';
 const stopTrack = vi.fn();
 const stream = { getTracks: () => [{ stop: stopTrack }] };
 const closeContext = vi.fn(async () => {});
 const addModule = vi.fn(async () => {});
 class FakeContext {
-  sampleRate = 48000;
+  sampleRate = 16000;
   destination = {};
   audioWorklet = { addModule };
   resume = async () => {};
@@ -78,17 +80,51 @@ describe('microphone lifecycle', () => {
   it('keeps the sample buffer bounded without losing the recording timeline', async () => {
     const rec = new Recorder();
     const times: number[] = [];
-    rec.onPoint = point => times.push(point.t);
+    rec.onPoint = (point) => times.push(point.t);
     await rec.start();
-    const tap = rec as unknown as { ingest: (chunk: Float32Array) => void; buffer: Float32Array };
+    const tap = rec as unknown as {
+      ingest: (chunk: Float32Array) => void;
+      buffer: Float32Array;
+    };
     for (let i = 0; i < 5000; i++) {
       tap.ingest(new Float32Array(128));
-      expect(tap.buffer.length).toBeLessThan(2048);
+      expect(tap.buffer.length).toBeLessThan(960);
     }
     const result = await rec.stop();
-    expect(result.durationSec).toBeCloseTo(5000 * 128 / 48000);
+    expect(result.durationSec).toBeCloseTo((5000 * 128) / 16000);
     expect(times.length).toBeGreaterThan(600);
-    for (let i = 1; i < times.length; i++) expect(times[i] - times[i - 1]).toBeCloseTo(1024 / 48000);
+    for (let i = 1; i < times.length; i++)
+      expect(times[i] - times[i - 1]).toBeCloseTo(0.01);
+  });
+
+  it('tracks a 180 ms pitch fall through the actual framing and YIN pipeline', async () => {
+    const rec = new Recorder();
+    await rec.start();
+    const tap = rec as unknown as { ingest: (chunk: Float32Array) => void };
+    const samples = new Float32Array(16000);
+    let phase = 0;
+    for (let i = 3200; i < 6080; i++) {
+      const position = (i - 3200) / 2880;
+      const hz = 110 * 2 ** (0.7 - 0.6 * position);
+      phase += (2 * Math.PI * hz) / 16000;
+      const envelope = Math.min(1, position / 0.05, (1 - position) / 0.05);
+      samples[i] = 0.2 * envelope * Math.sin(phase);
+    }
+    for (let i = 0; i < samples.length; i += 256)
+      tap.ingest(samples.slice(i, i + 256));
+    const result = await rec.stop();
+    const regions = soundRegions(result.track);
+    expect(regions).toHaveLength(1);
+    expect(regions[0].end - regions[0].start).toBeGreaterThanOrEqual(0.12);
+    expect(regions[0].end - regions[0].start).toBeLessThan(0.25);
+    expect(result.track[0].t).toBeCloseTo(0.03);
+    const feedback = coachTake(
+      regionTrack(result.track, regions[0]),
+      { lowHz: 110, highHz: 220 },
+      [4, 1],
+    );
+    expect(feedback.usable).toBe(true);
+    expect(feedback.score).toBeGreaterThan(70);
   });
 
   it('explains missing browser microphone support before allocating resources', async () => {

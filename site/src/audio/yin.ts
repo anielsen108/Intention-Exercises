@@ -22,7 +22,7 @@ const SILENCE_RMS = 1e-4;
 export function yinDetect(
   frame: Float32Array,
   sampleRate: number,
-  { fMin = 60, fMax = 500, threshold = 0.15 }: YinOptions = {},
+  { fMin = 50, fMax = 800, threshold = 0.15 }: YinOptions = {},
 ): PitchEstimate {
   let sumSq = 0;
   for (let i = 0; i < frame.length; i++) sumSq += frame[i] * frame[i];
@@ -31,7 +31,10 @@ export function yinDetect(
   }
 
   const tauMin = Math.max(2, Math.floor(sampleRate / fMax));
-  const tauMax = Math.min(Math.floor(sampleRate / fMin), Math.floor(frame.length / 2));
+  const tauMax = Math.min(
+    Math.floor(sampleRate / fMin),
+    Math.floor(frame.length / 2),
+  );
   const w = frame.length - tauMax; // fixed window so all taus are comparable
 
   // Difference function d(tau), then cumulative-mean-normalized d'(tau).

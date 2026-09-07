@@ -7,6 +7,14 @@ import { Recorder } from '../audio/recorder';
 import { stopContour } from '../audio/synth';
 import { PitchCanvas } from './PitchCanvas';
 import { ToneLetters } from './ToneMarks';
+import {
+  automaticRegion,
+  formatDuration,
+  regionTrack,
+  reliablePitch,
+  soundRegions,
+  type SoundRegion,
+} from '../analysis/timing';
 
 interface Take {
   id: number;
@@ -15,6 +23,8 @@ interface Take {
   feedback: Feedback;
   levels: number[];
   duration: number;
+  regions: SoundRegion[];
+  regionIndex: number | null;
 }
 interface Props {
   calibration: Calibration | null;
@@ -22,6 +32,7 @@ interface Props {
   prompt: string;
   onRequestCalibration: () => void;
   onBusy?: (busy: boolean) => void;
+  onSoundDuration?: (duration: number | null) => void;
   keyboardShortcut?: boolean;
 }
 const MAX_SECONDS = 12;
@@ -32,6 +43,7 @@ export function RecorderPanel({
   prompt,
   onRequestCalibration,
   onBusy,
+  onSoundDuration,
   keyboardShortcut = true,
 }: Props) {
   const recorder = useRef<Recorder | null>(null);
@@ -50,9 +62,19 @@ export function RecorderPanel({
   const [selected, setSelected] = useState<number | null>(null);
   const [error, setError] = useState('');
   const [byEar, setByEar] = useState(false);
+  const [fullTake, setFullTake] = useState(false);
+  const [autoStop, setAutoStop] = useState(true);
   const [meter, setMeter] = useState(0);
   const audioRef = useRef<HTMLAudioElement>(null);
   const take = takes.find((t) => t.id === selected) ?? null;
+  const focus =
+    take?.regionIndex != null ? take.regions[take.regionIndex] : undefined;
+  const focusDuration = focus ? focus.end - focus.start : null;
+  const durationCallback = useRef(onSoundDuration);
+  durationCallback.current = onSoundDuration;
+  useEffect(() => {
+    durationCallback.current?.(focusDuration);
+  }, [focusDuration]);
   const running = status === 'recording';
   const busy = status !== 'idle';
   const busyCallback = useRef(onBusy);
@@ -79,6 +101,24 @@ export function RecorderPanel({
     audioRef.current?.pause();
     pointsRef.current = value.track;
     setSelected(value.id);
+    setFullTake(false);
+  }
+  function selectRegion(index: number) {
+    if (!take || !calibration) return;
+    const segment = regionTrack(take.track, take.regions[index]);
+    setTakes((previous) =>
+      previous.map((item) =>
+        item.id === take.id
+          ? {
+              ...item,
+              regionIndex: index,
+              feedback: coachTake(segment, calibration, targetLevels),
+              levels: transcribe(segment, calibration).levels,
+            }
+          : item,
+      ),
+    );
+    setFullTake(false);
   }
   async function stop() {
     if (status !== 'recording' && !recorder.current) return;
@@ -93,14 +133,22 @@ export function RecorderPanel({
         if (result.audioUrl) URL.revokeObjectURL(result.audioUrl);
         return;
       }
-      const feedback = coachTake(result.track, calibration!, targetLevels);
+      const regions = soundRegions(result.track);
+      const regionIndex = targetLevels ? automaticRegion(regions) : null;
+      const segment = regionTrack(
+        result.track,
+        regionIndex === null ? undefined : regions[regionIndex],
+      );
+      const feedback = coachTake(segment, calibration!, targetLevels);
       const item: Take = {
         id: ++sequence.current,
         track: result.track,
         audioUrl: result.audioUrl,
         feedback,
-        levels: transcribe(result.track, calibration!).levels,
+        levels: transcribe(segment, calibration!).levels,
         duration: result.durationSec,
+        regions,
+        regionIndex,
       };
       if (item.audioUrl) urls.current.add(item.audioUrl);
       setTakes((previous) => {
@@ -135,6 +183,7 @@ export function RecorderPanel({
     stopContour();
     setError('');
     setElapsed(0);
+    setFullTake(false);
     setMeter(0);
     setSelected(null);
     setStatus('requesting');
@@ -155,7 +204,15 @@ export function RecorderPanel({
         const seconds = (performance.now() - started) / 1000;
         setElapsed(seconds);
         setMeter(Math.min(1, (pointsRef.current.at(-1)?.rms ?? 0) * 7));
-        if (seconds >= MAX_SECONDS) void stopRef.current();
+        const points = pointsRef.current;
+        const lastVoice = points.findLast(reliablePitch);
+        const quiet = lastVoice ? (points.at(-1)?.t ?? 0) - lastVoice.t : 0;
+        const enoughVoice = points.filter(reliablePitch).length >= 12;
+        if (
+          seconds >= MAX_SECONDS ||
+          (targetLevels && autoStop && enoughVoice && quiet >= 0.65)
+        )
+          void stopRef.current();
       }, 100);
     } catch (reason) {
       if (!alive.current || request !== requestId.current) return;
@@ -233,12 +290,30 @@ export function RecorderPanel({
           <div>
             <strong>Fit the pitch guide to your voice</strong>
             <p>
-              Set a comfortable low and high once to record and compare your
-              pitch.
+              Sample your ordinary speech, then an easy low and high, to make
+              the five pitch levels personal.
             </p>
           </div>
           <button className="primary-button" onClick={onRequestCalibration}>
             Set my voice range <span aria-hidden="true">→</span>
+          </button>
+        </div>
+      )}
+      {calibration && !calibration.midHz && (
+        <div className="setup-card">
+          <div>
+            <strong>Anchor medium to your everyday voice</strong>
+            <p>
+              Your saved range uses two notes. Add an ordinary-speech sample for
+              a personal speaking baseline.
+            </p>
+          </div>
+          <button
+            className="outline-button"
+            disabled={busy}
+            onClick={onRequestCalibration}
+          >
+            Refine my voice range
           </button>
         </div>
       )}
@@ -252,7 +327,11 @@ export function RecorderPanel({
               {targetLevels && (
                 <span>
                   <i className="legend-target" />{' '}
-                  {running ? 'Guide appears after stop' : 'Pitch guide'}
+                  {running
+                    ? 'Guide appears after stop'
+                    : focus
+                      ? 'Guide fitted to sound'
+                      : 'Pitch guide'}
                 </span>
               )}
               <span className={running ? 'live-status' : ''}>
@@ -267,12 +346,14 @@ export function RecorderPanel({
               key={selected ?? 'live'}
               pointsRef={pointsRef}
               calibration={calibration}
-              targetLevels={targetLevels}
+              targetLevels={take && !focus ? undefined : targetLevels}
               running={running}
-              windowSec={MAX_SECONDS}
+              windowSec={targetLevels ? 2 : 5}
+              focusRegion={focus}
+              fullTake={fullTake}
               ariaLabel={
                 take
-                  ? `Pitch trace for take ${take.id}. ${take.feedback.title}.`
+                  ? `Pitch trace for take ${take.id}. ${focusDuration ? `Focused sound: ${formatDuration(focusDuration)}. ` : ''}${take.feedback.title}.`
                   : 'Pitch monitor. Record to see your voice.'
               }
             />
@@ -284,6 +365,72 @@ export function RecorderPanel({
               </div>
             )}
           </div>
+          {take && !busy && (
+            <div className="chart-timing">
+              <div className="chart-timing-summary">
+                <span>
+                  {focus ? (
+                    <>
+                      <strong>{formatDuration(focusDuration!)}</strong> focused
+                      sound · {fullTake ? 'full recording' : 'fitted to chart'}
+                    </>
+                  ) : (
+                    'Pitch shown in real elapsed time'
+                  )}
+                </span>
+                {focus && (
+                  <button
+                    className="text-button"
+                    aria-pressed={fullTake}
+                    onClick={() => setFullTake(!fullTake)}
+                  >
+                    {fullTake ? 'Focus on sound' : 'Show full recording'}
+                  </button>
+                )}
+              </div>
+              {targetLevels && take.regions.length > 1 && (
+                <div
+                  className="sound-picker"
+                  aria-label="Choose a sound to compare"
+                >
+                  <span>
+                    {focus
+                      ? 'Comparing one detected sound:'
+                      : 'Choose the sound you meant to practice:'}
+                  </span>
+                  {take.regions.map((region, i) => (
+                    <button
+                      key={i}
+                      className={take.regionIndex === i ? 'active' : ''}
+                      aria-pressed={take.regionIndex === i}
+                      onClick={() => selectRegion(i)}
+                    >
+                      Sound {i + 1} ·{' '}
+                      {formatDuration(region.end - region.start)}
+                    </button>
+                  ))}
+                </div>
+              )}
+              {focus && (
+                <p className="microcopy">
+                  The guide spans this sound’s duration. Pitch shape is compared
+                  independently of pace. Short gaps can be consonants; sound
+                  boundaries are approximate.
+                </p>
+              )}
+            </div>
+          )}
+          {targetLevels && (
+            <label className="auto-stop">
+              <input
+                type="checkbox"
+                checked={autoStop}
+                disabled={busy}
+                onChange={(e) => setAutoStop(e.target.checked)}
+              />{' '}
+              Stop after my sound <span>after 650 ms of quiet</span>
+            </label>
+          )}
           <div className="record-actions">
             {status === 'requesting' && (
               <button className="outline-button" onClick={cancelRequest}>
@@ -308,7 +455,9 @@ export function RecorderPanel({
             </button>
             <span className="microcopy">
               {running
-                ? 'Speak now · stops at 12 seconds'
+                ? targetLevels && autoStop
+                  ? 'Speak naturally · stops after a short quiet gap'
+                  : 'Speak now · stops at 12 seconds'
                 : keyboardShortcut
                   ? 'Space to record / stop'
                   : 'Record, then stop to review'}
@@ -344,7 +493,14 @@ export function RecorderPanel({
                 onClick={() => selectTake(t)}
               >
                 Take {t.id}
-                <span>{t.duration.toFixed(1)}s</span>
+                <span>
+                  {t.regionIndex !== null
+                    ? formatDuration(
+                        t.regions[t.regionIndex].end -
+                          t.regions[t.regionIndex].start,
+                      ) + ' sound'
+                    : t.duration.toFixed(1) + 's recording'}
+                </span>
               </button>
             ))}
           </div>
@@ -394,9 +550,9 @@ export function RecorderPanel({
                   <p>
                     Prominent detected contour:{' '}
                     <ToneLetters levels={take.levels} />. Pitch similarity
-                    compares one voiced stretch with the selected guide in your
-                    calibrated range. It does not assess your words, timing,
-                    emotion, or how another person would interpret you.
+                    compares the focused voiced sound with the selected guide in
+                    your calibrated range. It does not assess your words,
+                    timing, emotion, or how another person would interpret you.
                   </p>
                 </details>
               )}
