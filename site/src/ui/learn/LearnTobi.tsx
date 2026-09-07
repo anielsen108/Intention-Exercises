@@ -158,7 +158,7 @@ export function LearnTobi({ calibration, onRequestCalibration }: Props) {
         <strong>pitch accents</strong> on stressed syllables (marked <code>*</code>),{' '}
         <strong>phrase accents</strong> after the last accent (<code>H-</code>/<code>L-</code>),
         and <strong>boundary tones</strong> at the edge (<code>H%</code>/<code>L%</code>).
-        Break indices 1–4 rate how strong each word boundary is. The demos below are
+        Break indices 0–4 describe how strong each word boundary is. The demos below are
         stylized sketches so you can hear each category — real realizations vary.
       </p>
 
@@ -195,9 +195,8 @@ export function LearnTobi({ calibration, onRequestCalibration }: Props) {
       <h3>Break indices & the exercise notation</h3>
       <ul>
         <li>
-          <strong>Break indices</strong> rate boundary strength 1–4. In the exercises they
-          appear as punctuation: <code>,</code> = slight hesitation (BI 2), <code>/</code> =
-          minor break (BI 3), <code>//</code> = major break (BI 4).
+          <strong>Break indices</strong> describe word-boundary relationships from 0–4. The source exercises use a simplified pause shorthand, not a full ToBI break transcription: <code>,</code> = slight hesitation, <code>/</code> =
+          minor break, <code>//</code> = major break.
         </li>
         <li>
           <strong>CAPS</strong> mark the primary stress (<code>Let it **GO**</code>) — that's
@@ -226,8 +225,7 @@ export function LearnTobi({ calibration, onRequestCalibration }: Props) {
 
       <h3>Try it</h3>
       <p>
-        Produce each tune; the analyzer scores your pitch shape against the sketch (70+
-        passes).
+        Hum each sketch as one connected sound to explore its movement. Pitch similarity is a practice aid, not an automatic ToBI annotation.
       </p>
       <TryContour
         target={contourForPattern(['H*', 'L-L%'])}
@@ -243,7 +241,7 @@ export function LearnTobi({ calibration, onRequestCalibration }: Props) {
       />
       <TryContour
         target={contourForPattern(['L+H*', 'L-H%'])}
-        prompt="Say “it's fine…” so nobody believes you (L+H* L-H%):"
+        prompt="Explore “it's fine…” with a reservation (L+H* L-H%):"
         calibration={calibration}
         onRequestCalibration={onRequestCalibration}
       />
@@ -252,9 +250,7 @@ export function LearnTobi({ calibration, onRequestCalibration }: Props) {
       <Quiz title="Match the description to the symbol" questions={questions} />
 
       <p className="learn-footnote">
-        Note: this site's live ToBI readout is heuristic — boundary tones and breaks from
-        pitch and pauses are fairly reliable, but accent labels without word timing are
-        approximate. Treat them as a study aid, not ground truth.
+        These sketches simplify the patterns in the source exercises. Automatic pitch tracking cannot establish ToBI accents or break indices without reliable word alignment and linguistic interpretation. The source collection also uses H+L*, a label outside the core American English ToBI inventory; it is retained here as source notation.
       </p>
     </div>
   );

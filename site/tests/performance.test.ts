@@ -43,14 +43,11 @@ describe('scorePerformance', () => {
     expect(result!.score).toBeGreaterThan(80);
   });
 
-  it('scores the nucleus against the best-matching marker when counts differ', () => {
+  it('withholds a score when a partial take cannot align with all target markers', () => {
     // One produced fall vs a two-marker target: should match the [5,1] marker.
     const track = mkTrack([{ from: 0.9, to: 0.1, ms: 300 }]);
     const result = scorePerformance(track, CAL, [m('now', [1, 5]), m('then', [5, 1])]);
-    expect(result).not.toBeNull();
-    expect(result!.perMarker).toHaveLength(1);
-    expect(result!.perMarker[0].markerIndex).toBe(1);
-    expect(result!.score).toBeGreaterThan(80);
+    expect(result).toBeNull();
   });
 
   it('returns null when nothing is voiced', () => {

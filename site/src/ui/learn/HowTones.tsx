@@ -1,208 +1,208 @@
 import { useState } from 'react';
 import type { Calibration } from '../../analysis/calibration';
-import { playContour } from '../../audio/synth';
-import { ContourDemo } from './ContourDemo';
+import { ContourPlayer } from '../ContourPlayer';
 
-interface Props {
+const WORDS = [
+  { word: 'I', meaning: 'Someone else may have said it; I didn’t.' },
+  { word: 'never', meaning: 'I deny saying it at any time.' },
+  { word: 'said', meaning: 'I may have implied it, but I didn’t say it.' },
+  { word: 'she', meaning: 'I may have said someone else stole it.' },
+  { word: 'stole', meaning: 'I may have said she borrowed it.' },
+  { word: 'it', meaning: 'I may have said she stole something else.' },
+];
+export function HowTones({
+  calibration,
+  onNavigate,
+}: {
   calibration: Calibration | null;
   onNavigate: (view: 'learn' | 'practice') => void;
-}
-
-/** "I thought you'd say that." — one sentence, three deliveries. */
-const THREE_WAYS = [
-  {
-    levels: [4, 3, 3, 1],
-    title: 'Authoritative',
-    description:
-      'Firm pace, narrow pitch, a decisive fall on “that”. The melody closes the door: nothing left to discuss.',
-  },
-  {
-    levels: [2, 4, 3, 4],
-    title: 'Inviting',
-    description:
-      'Lighter onset, a lift on “say”, a soft rising landing. The melody leaves the door open: your turn.',
-  },
-  {
-    levels: [3, 3, 3, 2],
-    title: 'Informative',
-    description:
-      'Even tempo, mid-level arc, gentle fall. No agenda — just the fact, plainly delivered.',
-  },
-];
-
-/** The classic stress-shift demonstration. */
-const STRESS_WORDS: { word: string; implication: string }[] = [
-  { word: 'I', implication: '…someone else said she stole it.' },
-  { word: 'never', implication: '…I absolutely deny ever saying it.' },
-  { word: 'said', implication: '…I may have implied it, but I didn’t say it.' },
-  { word: 'she', implication: '…someone stole it — just not her.' },
-  { word: 'stole', implication: '…she did something with it, but not stealing.' },
-  { word: 'it', implication: '…she stole something, but not that.' },
-];
-
-const INTENTION_MAP = [
-  {
-    levels: [5, 1],
-    title: 'Command / certainty',
-    description: 'A clean fall from high to low. “Stop.” “It’s decided.” The sound of finality.',
-  },
-  {
-    levels: [1, 5],
-    title: 'Genuine question / appeal',
-    description: 'A committed rise, bottom to top. “Really?” “You’re coming?” It hands over the turn.',
-  },
-  {
-    levels: [3, 2],
-    title: 'Reassurance / calm',
-    description: 'A small, warm fall from the middle — low effort, low stakes. “It’s fine. Breathe.”',
-  },
-  {
-    levels: [5, 1, 5],
-    title: 'Irony / reservation',
-    description:
-      'Down, then back up — the melody takes back what the words gave. “Yeah, great…”',
-  },
-  {
-    levels: [1, 3, 5],
-    title: 'Urgency / pleading',
-    description: 'A rise that keeps climbing. “Please — now!” Momentum without resolution.',
-  },
-  {
-    levels: [1, 1],
-    title: 'Resignation / flatness',
-    description: 'No melody at all — and that absence is the message. “Whatever.”',
-  },
-];
-
-export function HowTones({ calibration, onNavigate }: Props) {
-  const [stressIdx, setStressIdx] = useState<number | null>(null);
-  const cal = calibration ?? undefined;
-
+}) {
+  const [stress, setStress] = useState(0);
+  const [shape, setShape] = useState(0);
+  const shapes = [
+    { name: 'A settled ending', levels: [4, 1] },
+    { name: 'An open question', levels: [2, 5] },
+    { name: 'A reservation', levels: [4, 1, 3] },
+  ];
   return (
-    <div className="learn-track">
-      <h2>How tones convey intention</h2>
-      <p>
-        Words carry the <em>content</em> of a message; melody, stress, and timing carry the{' '}
-        <em>intention</em> — who's in charge, whether the door is open, whether you mean it.
-        Listeners decode this layer instantly and involuntarily. Speakers, though, usually
-        control it by instinct alone. Making that layer conscious and controllable is the
-        whole point of this site.
-      </p>
-
-      <h3>One sentence, three messages</h3>
-      <p>
-        Take <strong>“I thought you'd say that.”</strong> Same six words — three entirely
-        different social moves, depending only on the melody they ride. Play each one.
-      </p>
-      <div className="demo-grid">
-        {THREE_WAYS.map((w) => (
-          <ContourDemo key={w.title} {...w} hideSymbol calibration={calibration} />
-        ))}
-      </div>
-
-      <h3>The four levers</h3>
-
-      <h4>1. Melody — direction is stance</h4>
-      <p>
-        Falls close; rises open; a dip that comes back up hedges. A fall says the utterance
-        is complete and yours to accept; a rise hands the turn to the listener; a fall–rise
-        says “…but”.
-      </p>
-      <p>
-        <button className="ghost-btn" onClick={() => playContour([5, 1], cal)}>
-          ▶ closing fall
-        </button>{' '}
-        <button className="ghost-btn" onClick={() => playContour([1, 5], cal)}>
-          ▶ opening rise
-        </button>{' '}
-        <button className="ghost-btn" onClick={() => playContour([5, 1, 5], cal)}>
-          ▶ hedging dip
-        </button>
-      </p>
-
-      <h4>2. Stress — where the meaning lands</h4>
-      <p>
-        Moving the stressed word re-aims the whole sentence. Click a word in{' '}
-        <em>“I never said she stole it”</em> to see what stressing it implies:
-      </p>
-      <div className="stress-widget">
-        <div className="variation-chips">
-          {STRESS_WORDS.map((s, i) => (
-            <button
-              key={s.word}
-              className={`chip ${stressIdx === i ? 'active' : ''}`}
-              onClick={() => setStressIdx(i)}
-            >
-              {s.word}
-            </button>
-          ))}
-        </div>
-        <p className="stress-implication">
-          {stressIdx === null ? (
-            <span className="muted">— six words, six different accusations —</span>
-          ) : (
-            <>
-              “I never said she stole it” <strong>{STRESS_WORDS[stressIdx].implication}</strong>
-            </>
-          )}
+    <div className="how-page">
+      <header className="how-header">
+        <div className="eyebrow">HOW THE PRACTICE WORKS</div>
+        <h1>
+          Give the same words
+          <br />
+          <em>a different job.</em>
+        </h1>
+        <p>
+          “You’re coming” can confirm a plan, ask a question, or carry a
+          reservation. Your voice helps a listener decide which one you mean.
         </p>
-      </div>
-
-      <h4>3. Pauses — grouping is meaning</h4>
-      <p>
-        Pauses parcel words into thought-units, and regrouping changes the thought —{' '}
-        <em>“Let's eat, Grandma”</em> versus <em>“Let's eat Grandma”</em>. A pause can be a
-        slight hesitation, a real break, or a full stop of breath, and each grade says
-        something different. A pause just before a word also spotlights it: “I need it…{' '}
-        <em>now</em>.”
-      </p>
-
-      <h4>4. Color — everything that isn't melody</h4>
-      <p>
-        Tempo, breathiness, tension, the smile you can hear. The same falling “let it go”
-        lands as encouragement when it's breathy and slow, and as an order when it's clipped
-        and hard. Recordings capture this even before you learn to name it — always listen
-        back.
-      </p>
-
-      <h3>A field guide: intention → melody</h3>
-      <p>
-        Six intention families you use every day, each with its signature melody. Play them —
-        you'll recognize every one.
-      </p>
-      <div className="demo-grid">
-        {INTENTION_MAP.map((m) => (
-          <ContourDemo key={m.title} {...m} hideSymbol calibration={calibration} />
-        ))}
-      </div>
-
-      <h3>Subtext: when melody and words disagree</h3>
-      <p>
-        Sincerity is alignment — positive words on a settling fall. Irony is deliberate
-        mismatch: positive words on a dip-and-return, and the melody wins. Every listener
-        trusts the tone over the text. That's why the same “yeah, great” can be praise{' '}
-        <button className="ghost-btn" onClick={() => playContour([4, 2], cal)}>
-          ▶ sincere
-        </button>{' '}
-        or an eye-roll{' '}
-        <button className="ghost-btn" onClick={() => playContour([5, 1, 5], cal)}>
-          ▶ sarcastic
+      </header>
+      <section className="how-section">
+        <div className="how-number">01</div>
+        <div>
+          <h2>Start with a situation.</h2>
+          <p>
+            Who are you speaking to? What do you want them to understand or do?
+            Each guided exercise gives you a situation so that your delivery has
+            a purpose.
+          </p>
+          <div className="situation-pair">
+            <div>
+              <span className="eyebrow">CONFIRMING A PLAN</span>
+              <p>
+                Your friend already agreed.
+                <br />
+                <b>“You’re coming.”</b>
+              </p>
+            </div>
+            <div>
+              <span className="eyebrow">CHECKING THE PLAN</span>
+              <p>
+                You’re still waiting for an answer.
+                <br />
+                <b>“You’re coming?”</b>
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section className="how-section">
+        <div className="how-number">02</div>
+        <div>
+          <h2>Change one thing you can hear.</h2>
+          <p>
+            Begin with the direction of the pitch. Listen to these sketches, hum
+            along, then speak the line. The sounds illustrate pitch movement;
+            they are not recordings of a person delivering the sentence.
+          </p>
+          <div className="variation-chips">
+            {shapes.map((s, i) => (
+              <button
+                key={s.name}
+                className={`chip ${shape === i ? 'active' : ''}`}
+                aria-pressed={shape === i}
+                onClick={() => setShape(i)}
+              >
+                {s.name}
+              </button>
+            ))}
+          </div>
+          <ContourPlayer
+            key={shape}
+            levels={shapes[shape].levels}
+            calibration={calibration}
+          />
+          <p>
+            In these examples, a fall can help settle the thought, a rise can
+            invite an answer, and a fall–rise can suggest a reservation. These
+            are possibilities to explore. Context and accent can change how a
+            listener interprets them.
+          </p>
+        </div>
+      </section>
+      <section className="how-section">
+        <div className="how-number">03</div>
+        <div>
+          <h2>Move the emphasis.</h2>
+          <p>
+            Choose a word to emphasize, then say the sentence. The line beneath
+            it gives one possible implication.
+          </p>
+          <div className="stress-widget">
+            <div className="stress-words">
+              {WORDS.map((w, i) => (
+                <button
+                  key={w.word}
+                  aria-pressed={stress === i}
+                  className={stress === i ? 'active' : ''}
+                  onClick={() => setStress(i)}
+                >
+                  {w.word}
+                </button>
+              ))}
+            </div>
+            <p aria-live="polite">{WORDS[stress].meaning}</p>
+          </div>
+          <p>
+            Give the important word a little more duration or pitch movement.
+            You don’t need to make the whole sentence louder.
+          </p>
+        </div>
+      </section>
+      <section className="how-section">
+        <div className="how-number">04</div>
+        <div>
+          <h2>Listen beyond the pitch line.</h2>
+          <div className="levers-grid">
+            <div>
+              <h3>Timing</h3>
+              <p>
+                A pause before “now” adds attention to it. A pause after a
+                question makes space for a reply.
+              </p>
+            </div>
+            <div>
+              <h3>Voice quality</h3>
+              <p>
+                A gentle onset and an easy pace can soften a falling line. A
+                clipped ending can make the same line feel firmer.
+              </p>
+            </div>
+          </div>
+          <p>
+            Record the two intentions and compare the takes. Pick one thing to
+            adjust, then try again. Aim for a delivery you could use in
+            conversation.
+          </p>
+        </div>
+      </section>
+      <section className="measurement-note">
+        <h2>What the feedback can tell you</h2>
+        <p>
+          The graph shows detected pitch over time. In “Isolate the shape”, a
+          similarity score compares a single voiced stretch with a pitch guide
+          fitted to your range. Short, unclear, or ambiguous recordings receive
+          a retry cue instead of a score.
+        </p>
+        <p>
+          The app does not recognize your words or judge your emotion,
+          authenticity, stress placement, or success with a listener. Whole
+          sentences are for playback and self-assessment. Your recordings stay
+          in this browser tab; practice progress and voice range are saved
+          locally when browser storage is available.
+        </p>
+        <p>
+          For the notation behind the guides, see the{' '}
+          <a
+            href="https://www.ling.ohio-state.edu/research/phonetics/E_ToBI/"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Ohio State ToBI labelling guide
+          </a>{' '}
+          and the{' '}
+          <a
+            href="https://www.internationalphoneticassociation.org/content/ipa-chart"
+            target="_blank"
+            rel="noreferrer"
+          >
+            International Phonetic Association chart
+          </a>
+          . The studio’s five pitch bands are a teaching convention relative to
+          your voice.
+        </p>
+      </section>
+      <div className="how-cta">
+        <h2>Try the contrast yourself.</h2>
+        <button
+          className="primary-button"
+          onClick={() => onNavigate('practice')}
+        >
+          Go to the practice studio →
         </button>
-        .
-      </p>
-
-      <h3>Where to go from here</h3>
-      <p>
-        Everything on this page can be written down precisely — there are two notation
-        systems for it, and this site teaches both, then lets you drill them against a live
-        microphone with thousands of exercises.
-      </p>
-      <div className="intro-actions">
-        <button className="ghost-btn" onClick={() => onNavigate('learn')}>
-          Learn the notation →
-        </button>
-        <button className="record-btn" onClick={() => onNavigate('practice')}>
-          Practice vocal intentions →
+        <button className="text-button" onClick={() => onNavigate('learn')}>
+          Explore the notation
         </button>
       </div>
     </div>

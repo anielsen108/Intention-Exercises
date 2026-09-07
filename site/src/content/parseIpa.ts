@@ -13,7 +13,7 @@ const NUMBERED_RE = /^\d+\.\s/u;
 /** A tone legend block: `[˥ ˩ => ˥˩]` — left side may be spaced or fused. */
 const LEGEND_RE = /\[\s*([˩˨˧˦˥](?:\s*[˩˨˧˦˥])*)\s*=>\s*[˩˨˧˦˥\s]+\]/gu;
 /** A tone-marked word: `[Stop˥˩]` (word may contain letters, apostrophes, hyphens). */
-const MARKER_RE = /\[([^\[\]˩˨˧˦˥]+?)([˩˨˧˦˥]+)\]/gu;
+const MARKER_RE = /\[([^\]˩˨˧˦˥[]+?)([˩˨˧˦˥]+)\]/gu;
 const SECTION_RE = /^##\s+(.+)$/u;
 /** `# 16. Status Signals — 100 Exercises` — domain heading; numbering restarts. */
 const DOMAIN_RE = /^#\s+(\d+)\.\s*(.+)$/u;

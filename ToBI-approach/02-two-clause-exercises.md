@@ -339,7 +339,7 @@
 **Impressed-concerned**
 - ToBI: L* L+H* L+H* L-H% / H* L* H* L* L+H* L-L%
 - Stress: She seemed **CONFIDENT** / yet her hands were **SHAKING**
-- Stress: She seemed confident / yet her hands were shaking.
+- Pause: She seemed confident / yet her hands were shaking.
 - Admiring note shifts to worried observation.
 
 **Analytical-suspicious**

@@ -14,11 +14,11 @@ interface Props {
 }
 
 const LEVEL_INFO = [
-  { level: 1, name: 'Extra low', hint: 'the floor of your range — resignation, gravity' },
-  { level: 2, name: 'Low', hint: 'relaxed low voice — calm statements' },
+  { level: 1, name: 'Extra low', hint: 'the lower part of your comfortable practice range' },
+  { level: 2, name: 'Low', hint: 'below the middle of your practice range' },
   { level: 3, name: 'Mid', hint: 'your neutral speaking pitch' },
-  { level: 4, name: 'High', hint: 'raised pitch — interest, energy' },
-  { level: 5, name: 'Extra high', hint: 'the top of your range — excitement, appeal' },
+  { level: 4, name: 'High', hint: 'above the middle of your practice range' },
+  { level: 5, name: 'Extra high', hint: 'the upper part of your comfortable practice range' },
 ];
 
 const CONTOURS = [
@@ -98,12 +98,12 @@ export function LearnIpa({ calibration, onRequestCalibration }: Props) {
         linguist Yuen Ren Chao) draw pitch directly: each letter is a level on a five-step
         staff, read left to right. A sequence like{' '}
         <span className="tone-letters">˥˩</span> fuses into a single falling stroke — the
-        notation <em>is</em> the melody. Crucially, the five levels are relative to{' '}
+        notation <em>is</em> the melody. In this studio, the five levels are relative to{' '}
         <strong>your</strong> voice, not to absolute notes; that's what calibration sets up.
       </p>
 
       <h3>The five levels</h3>
-      <p>Tap ▶ on each card to hear the level in your calibrated range.</p>
+      <p>Tap ▶ to hear each pitch level. Playback uses your saved range, or a sample range until you set your own.</p>
       <div className="demo-grid">
         {LEVEL_INFO.map((info) => (
           <ContourDemo
@@ -118,6 +118,7 @@ export function LearnIpa({ calibration, onRequestCalibration }: Props) {
       </div>
 
       <h3>Contours</h3>
+      <p>The intention labels below suggest ways to practice these shapes. They are not fixed meanings: context, accent, and delivery matter.</p>
       <p>
         Real speech moves. Combining levels gives contour tones — these eight cover nearly
         everything in the exercises. Listen to each, then hum along with it.
@@ -138,13 +139,12 @@ export function LearnIpa({ calibration, onRequestCalibration }: Props) {
       </p>
       <ul>
         <li>
-          <code>[stop˥˩]</code> — say “stop” with a high fall. Everything outside the
-          brackets stays close to your neutral mid.
+          <code>[stop˥˩]</code> — say “stop” with a high fall. For this drill, keep the surrounding words near your comfortable speaking pitch.
         </li>
         <li>
           The trailing legend <code>[˥ ˩ =&gt; ˥˩]</code> in the source files just shows the
           spaced and fused forms of the same contour — some fonts ligate them, some don't.
-          This site's font always fuses them.
+          The bundled tone font supports connected tone letters.
         </li>
         <li>
           Brackets can split a word — <code>be[lieve˥˩]</code> means the fall lands on the
@@ -166,7 +166,7 @@ export function LearnIpa({ calibration, onRequestCalibration }: Props) {
 
       <h3>Try it</h3>
       <p>
-        Hum first, words second — the analyzer only listens to pitch. A score of 70+ passes.
+        Hum the shape on one connected sound, then speak it. The feedback measures pitch similarity; it does not grade the intention.
       </p>
       <TryContour
         target={[5, 1]}

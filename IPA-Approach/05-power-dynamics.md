@@ -41,7 +41,7 @@
 28. **Passive-aggressive abdication** — [Whatever˥˩] you think is best. [˥ ˩ => ˥˩]
 29. **Apologetic powerlessness** — I'm [sorry˩˧˥], but— [˩ ˧ ˥ => ˩˧˥]
 30. **Polite boundary** — I'm [sorry˧˨], but— [˧ ˨ => ˧˨]
-31. **False apology** — I'm [sorry˥˩], [but˥˩]— [˥ ˩ => ˥˩]
+31. **False apology** — I'm [sorry˥˩], [but˥˩] — [˥ ˩ => ˥˩] [˥ ˩ => ˥˩]
 32. **Extreme deference** — Could I [possibly˩˧˥]— [˩ ˧ ˥ => ˩˧˥]
 33. **Strategic humility** — Could I [possibly˧˨]— [˧ ˨ => ˧˨]
 34. **Ironic over-politeness** — [Could˥˩] I possibly— [˥ ˩ => ˥˩]

@@ -19,8 +19,8 @@ export interface PerformanceScore {
 
 /**
  * Score a take against the exercise's tone markers. When the number of voiced
- * runs equals the number of markers, pair them in order; otherwise score the
- * nuclear run against every marker and keep the best match.
+ * runs equals the number of markers, pair them in order. Withhold a score when
+ * alignment is ambiguous; selecting the best target would inflate feedback.
  */
 export function scorePerformance(
   track: TrackPoint[],
@@ -30,7 +30,8 @@ export function scorePerformance(
   const transcription = transcribe(track, cal);
   if (transcription.nucleusIndex === -1 || markers.length === 0) return null;
 
-  const { runs, nucleusIndex } = transcription;
+  const { runs } = transcription;
+  if (runs.length !== markers.length) return null;
   const perMarker: MarkerScore[] = [];
 
   if (runs.length === markers.length) {
@@ -38,14 +39,6 @@ export function scorePerformance(
       const st = runSemitones(track, run);
       perMarker.push({ markerIndex: i, score: scoreContour(st, markers[i].levels, cal).score });
     });
-  } else {
-    const st = runSemitones(track, runs[nucleusIndex]);
-    let best: MarkerScore = { markerIndex: 0, score: -1 };
-    markers.forEach((marker, i) => {
-      const { score } = scoreContour(st, marker.levels, cal);
-      if (score > best.score) best = { markerIndex: i, score };
-    });
-    perMarker.push(best);
   }
 
   const score = Math.round(perMarker.reduce((a, s) => a + s.score, 0) / perMarker.length);

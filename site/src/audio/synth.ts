@@ -5,6 +5,18 @@ import { levelToHz } from '../analysis/calibration';
 export const DEFAULT_SYNTH_CAL: Calibration = { lowHz: 110, highHz: 220 };
 
 let ctx: AudioContext | null = null;
+let active: AudioScheduledSourceNode[] = [];
+
+export function stopContour(): void {
+  active.forEach((node) => {
+    try {
+      node.stop();
+    } catch {
+      /* Already finished. */
+    }
+  });
+  active = [];
+}
 
 function audioCtx(): AudioContext {
   if (!ctx || ctx.state === 'closed') ctx = new AudioContext();
@@ -18,17 +30,21 @@ export function playContour(
   cal: Calibration = DEFAULT_SYNTH_CAL,
   durSec = 0.7,
 ): void {
+  stopContour();
   if (levels.length === 0) return;
   const ac = audioCtx();
   const t0 = ac.currentTime + 0.04;
 
   const osc = ac.createOscillator();
-  osc.type = 'triangle';
+  osc.type = 'sine';
   const freqs = levels.map((lvl) => levelToHz(lvl, cal));
   osc.frequency.setValueAtTime(freqs[0], t0);
   if (freqs.length > 1) {
     freqs.slice(1).forEach((hz, i) => {
-      osc.frequency.exponentialRampToValueAtTime(hz, t0 + ((i + 1) / (freqs.length - 1)) * durSec);
+      osc.frequency.exponentialRampToValueAtTime(
+        hz,
+        t0 + ((i + 1) / (freqs.length - 1)) * durSec,
+      );
     });
   }
 
@@ -39,6 +55,12 @@ export function playContour(
   gain.gain.exponentialRampToValueAtTime(0.0001, t0 + durSec + 0.08);
 
   osc.connect(gain).connect(ac.destination);
+  osc.onended = () => {
+    osc.disconnect();
+    gain.disconnect();
+    active = active.filter((node) => node !== osc);
+  };
+  active.push(osc);
   osc.start(t0);
   osc.stop(t0 + durSec + 0.12);
 }

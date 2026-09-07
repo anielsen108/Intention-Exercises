@@ -62,7 +62,7 @@ export function dtwDistance(a: number[], b: number[]): number {
 
 /** Render target IPA tone levels (1..5) as an n-point 0..1 polyline. */
 export function targetPolyline(levels: number[], n: number = DTW_N): number[] {
-  const positions = levels.map((lvl) => (lvl - 1) / 4);
+  const positions = levels.map((lvl) => (lvl - 0.5) / 5);
   return resample(positions, n);
 }
 

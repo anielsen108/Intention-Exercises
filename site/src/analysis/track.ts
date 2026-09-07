@@ -76,7 +76,7 @@ export function runSemitones(track: TrackPoint[], run: VoicedRun): number[] {
   const values: number[] = [];
   for (let i = run.start; i <= run.end; i++) {
     const hz = track[i].hz;
-    if (hz !== null) values.push(hzToSemitone(hz));
+    if (hz !== null && track[i].clarity >= 0.6) values.push(hzToSemitone(hz));
   }
   return medianSmooth(values, 5);
 }

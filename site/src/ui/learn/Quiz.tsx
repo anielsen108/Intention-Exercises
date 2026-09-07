@@ -71,7 +71,7 @@ export function Quiz({ title, questions }: { title: string; questions: QuizQuest
             else if (choice === picked) cls += ' wrong';
           }
           return (
-            <button key={choice} className={cls} onClick={() => pick(choice)}>
+            <button key={choice} className={cls} disabled={picked !== null} onClick={() => pick(choice)}>
               {choice}
             </button>
           );

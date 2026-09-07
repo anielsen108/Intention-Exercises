@@ -12,9 +12,20 @@ const HOP = 1024;
 
 const WORKLET_SRC = `
 class ViTap extends AudioWorkletProcessor {
+  constructor() {
+    super();
+    this.block = new Float32Array(1024);
+    this.used = 0;
+  }
   process(inputs) {
     const ch = inputs[0] && inputs[0][0];
-    if (ch) this.port.postMessage(ch.slice(0));
+    if (ch) for (let i = 0; i < ch.length; i++) {
+      this.block[this.used++] = ch[i];
+      if (this.used === this.block.length) {
+        this.port.postMessage(this.block);
+        this.used = 0;
+      }
+    }
     return true;
   }
 }
@@ -27,6 +38,8 @@ export interface RecordingResult {
   audioUrl: string | null;
   durationSec: number;
 }
+
+let activeRecorder: object | null = null;
 
 export class Recorder {
   /** Called for every new pitch point while recording (for the live trace). */
@@ -41,6 +54,9 @@ export class Recorder {
   private consumed = 0;
   private totalSamples = 0;
   private track: TrackPoint[] = [];
+  private cancelled = false;
+  private readonly ownerToken = {};
+  private stopping: Promise<RecordingResult> | null = null;
 
   get isRecording(): boolean {
     return this.ctx !== null;
@@ -48,52 +64,90 @@ export class Recorder {
 
   async start(): Promise<void> {
     if (this.ctx) return;
+    if (activeRecorder && activeRecorder !== this.ownerToken)
+      throw new Error('Another microphone recording is already in progress.');
+    activeRecorder = this.ownerToken;
+    this.cancelled = false;
+    this.stopping = null;
     this.track = [];
     this.chunks = [];
     this.buffer = new Float32Array(0);
     this.consumed = 0;
     this.totalSamples = 0;
 
-    this.stream = await navigator.mediaDevices.getUserMedia({
-      audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false },
-    });
-    this.ctx = new AudioContext();
-    const workletUrl = URL.createObjectURL(
-      new Blob([WORKLET_SRC], { type: 'application/javascript' }),
-    );
     try {
-      await this.ctx.audioWorklet.addModule(workletUrl);
-    } finally {
-      URL.revokeObjectURL(workletUrl);
-    }
+      if (!navigator.mediaDevices?.getUserMedia)
+        throw new Error(
+          'Microphone access requires HTTPS or localhost in a supported browser.',
+        );
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: {
+          echoCancellation: false,
+          noiseSuppression: false,
+          autoGainControl: false,
+        },
+      });
+      if (this.cancelled) {
+        stream.getTracks().forEach((t) => t.stop());
+        return;
+      }
+      this.stream = stream;
+      this.ctx = new AudioContext();
+      await this.ctx.resume();
+      const workletUrl = URL.createObjectURL(
+        new Blob([WORKLET_SRC], { type: 'application/javascript' }),
+      );
+      try {
+        await this.ctx.audioWorklet.addModule(workletUrl);
+      } finally {
+        URL.revokeObjectURL(workletUrl);
+      }
 
-    const source = this.ctx.createMediaStreamSource(this.stream);
-    this.node = new AudioWorkletNode(this.ctx, 'vi-tap');
-    this.node.port.onmessage = (e: MessageEvent<Float32Array>) => this.ingest(e.data);
-    source.connect(this.node);
+      if (this.cancelled || !this.ctx || !this.stream) return;
 
-    if (typeof MediaRecorder !== 'undefined') {
-      this.media = new MediaRecorder(this.stream);
-      this.media.ondataavailable = (e) => {
-        if (e.data.size > 0) this.chunks.push(e.data);
-      };
-      this.media.start();
+      const source = this.ctx.createMediaStreamSource(this.stream);
+      this.node = new AudioWorkletNode(this.ctx, 'vi-tap');
+      this.node.port.onmessage = (e: MessageEvent<Float32Array>) =>
+        this.ingest(e.data);
+      source.connect(this.node);
+      // Keep the worklet in the rendered audio graph; its output is silent.
+      this.node.connect(this.ctx.destination);
+
+      if (typeof MediaRecorder !== 'undefined') {
+        this.media = new MediaRecorder(this.stream);
+        this.media.ondataavailable = (e) => {
+          if (e.data.size > 0) this.chunks.push(e.data);
+        };
+        this.media.start();
+      }
+    } catch (error) {
+      await this.stop();
+      throw error;
     }
   }
 
-  async stop(): Promise<RecordingResult> {
+  stop(): Promise<RecordingResult> {
+    this.cancelled = true;
+    if (activeRecorder === this.ownerToken) activeRecorder = null;
+    this.stopping ??= this.finish();
+    return this.stopping;
+  }
+
+  private async finish(): Promise<RecordingResult> {
     const track = this.track;
     const sampleRate = this.ctx?.sampleRate ?? 48000;
     const durationSec = this.totalSamples / sampleRate;
 
-    const audioUrl = await this.stopMedia();
+    const mediaResult = this.stopMedia();
     this.node?.disconnect();
+    if (this.node) this.node.port.onmessage = null;
     this.stream?.getTracks().forEach((t) => t.stop());
     await this.ctx?.close().catch(() => {});
     this.ctx = null;
     this.stream = null;
     this.node = null;
     this.media = null;
+    const audioUrl = await mediaResult;
 
     return { track, audioUrl, durationSec };
   }
@@ -127,7 +181,9 @@ export class Recorder {
       let sumSq = 0;
       for (let i = 0; i < frame.length; i++) sumSq += frame[i] * frame[i];
       const point: TrackPoint = {
-        t: (this.totalSamples - (this.buffer.length - this.consumed)) / sampleRate,
+        t:
+          (this.totalSamples - (this.buffer.length - this.consumed)) /
+          sampleRate,
         hz,
         clarity,
         rms: Math.sqrt(sumSq / frame.length),
@@ -136,10 +192,11 @@ export class Recorder {
       this.onPoint?.(point);
       this.consumed += HOP;
     }
-    // Drop consumed samples periodically to bound memory.
-    if (this.consumed > sampleRate * 10) {
-      this.buffer = this.buffer.slice(this.consumed - FRAME + HOP);
-      this.consumed = FRAME - HOP;
+    // Keep only the unconsumed overlap. Retaining seconds of consumed samples
+    // would copy a growing buffer on every worklet message and starve UI timers.
+    if (this.consumed > 0) {
+      this.buffer = this.buffer.slice(this.consumed);
+      this.consumed = 0;
     }
   }
 }

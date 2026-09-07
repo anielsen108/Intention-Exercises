@@ -8,7 +8,10 @@ export function useCollections(): CollectionMeta[] | null {
   useEffect(() => {
     let cancelled = false;
     fetch(`${base}content/collections.json`)
-      .then((r) => r.json())
+      .then((r) => {
+        if (!r.ok) throw new Error('Collections could not load');
+        return r.json();
+      })
       .then((data: CollectionMeta[]) => {
         if (!cancelled) setCollections(data);
       })
@@ -22,7 +25,10 @@ export function useCollections(): CollectionMeta[] | null {
   return collections;
 }
 
-export function useExercises(approach: Approach, slug: string | null): Exercise[] | null {
+export function useExercises(
+  approach: Approach,
+  slug: string | null,
+): Exercise[] | null {
   const [exercises, setExercises] = useState<Exercise[] | null>(null);
   useEffect(() => {
     if (!slug) {
@@ -32,7 +38,10 @@ export function useExercises(approach: Approach, slug: string | null): Exercise[
     let cancelled = false;
     setExercises(null);
     fetch(`${base}content/${approach}/${slug}.json`)
-      .then((r) => r.json())
+      .then((r) => {
+        if (!r.ok) throw new Error('Exercises could not load');
+        return r.json();
+      })
       .then((data: Exercise[]) => {
         if (!cancelled) setExercises(data);
       })

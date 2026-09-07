@@ -1,119 +1,36 @@
-# Vocal Intentions — Look & Feel Plan
+# Site audit and redesign
 
-The site works, but it currently reads as a generic admin panel: system fonts, flat
-white/indigo, three equal-weight columns, bare numbers for feedback. The material
-deserves better — this is a *rehearsal room*, and the exercise sentence is a line of
-script the user is about to perform. Every design decision below serves that framing.
+## Intended outcome
 
-**Design concept: "rehearsal room."** Quiet, warm, focused surfaces; one piece of
-text treated theatrically; the pitch canvas as the stage where your voice becomes
-visible. Not playful-gamified, not clinical-linguistic — somewhere between a score
-and a script.
+Help a speaker deliberately change the intention of a line by controlling pitch, emphasis, timing, and voice quality. The exercise succeeds when the speaker can hear a useful contrast and reproduce it in a plausible situation.
 
----
+## What weakened the original attempt
 
-## 1. Typography (highest impact per hour)
+| Finding | Why it matters | Implemented change |
+| --- | --- | --- |
+| A long explanation was the landing page; practice began with notation choices and a large collection list. | A new learner had to design their own lesson before trying a delivery. | A studio landing page, an audible contrast, and four guided sessions with a clear starting point. |
+| Most IPA entries had one intention, while the interface promised three variations of the same sentence. | Browsing individual entries did not train deliberate contrasts. | Twelve curated lines with two different situations and deliveries each; the original library remains available. |
+| The practice screen lacked an audible target. | A learner unfamiliar with pitch notation could not easily turn the symbols into an action. | Audible hums, a moving visual trace, slower playback, and plain-language shape labels. |
+| Recording produced notation and a match number without a useful next step. | The learner could not tell what to change. | Retry cues for direction, starting pitch, landing, signal quality, and range; a distinct full-sentence listening mode. |
+| A partial multi-marker take was matched against the easiest target. | The score could reward an incomplete performance. | Ambiguous alignment returns no score. The studio isolates one selected word or hum for comparison. |
+| Synthesized frequencies used band centers while scoring targets used the extreme edges of the range. | The app could disagree with its own demonstration. | One band-center mapping for audio, graphs, and scoring, with a regression test. |
+| A new take replaced the old one. | There was no practical way to compare attempts. | The last three takes in the current scope, selectable playback, and a same-scope score change when both takes are usable. |
+| Calibration was a barrier, and missing microphone access stopped practice. | Listening and self-directed repetition were unnecessarily blocked. | Playback and practice-by-ear without calibration; clear microphone recovery instructions. |
+| Recording and calibration had fragile cancellation and resource cleanup. | Navigating away or closing a permission prompt could leave work running. | Cancellable initialization, idempotent stop, a single microphone owner, disposed timers and audio URLs, and regression coverage. |
+| The global Space shortcut intercepted controls and could activate multiple lesson recorders. | Keyboard interaction could trigger unexpected recording. | Shortcuts ignore interactive elements and dialogs; reference-lesson recorders use their own controls. |
+| Copy treated pitch as a fixed dictionary of social meaning. | That overstated what prosody and automatic analysis can establish. | Situational examples and explicit limits; reflection assesses intention, while the algorithm compares pitch. |
+| The README claimed 6,000+ exercises and complete parallel corpora. | The actual content build did not support those claims. | A verified inventory of 2,512 parsed entries across 39 collections and transparent descriptions of partial sources. |
 
-- **The sentence is the hero.** Set exercise text in a warm, characterful serif —
-  *Fraunces* (variable, OFL) or *Source Serif 4* — at ~2.4rem with real quotation
-  marks and generous leading. Everything else stays quiet around it.
-- **UI text**: *Inter* (or stay with system-ui — acceptable), with a deliberate
-  scale: 0.75 / 0.85 / 1.0 / 1.2 / 2.4rem and letterspaced small-cap labels for
-  things like STRESS, PAUSES, TOBI.
-- **Tone letters**: bundle a subset of *Charis SIL* (OFL) so ˩˧˥ renders and
-  ligates identically on every OS — this kills the corpus's own font-rendering
-  workaround for good. Subset to tone letters + IPA block (~10 KB woff2 via
-  glyphhanger/pyftsubset).
-- All fonts self-hosted in `site/public/fonts` (no CDN → works offline, no CSP/
-  privacy concerns, Netlify-friendly).
+## Design
 
-## 2. Color system
+The page uses warm paper, dark green, a locally bundled serif for spoken lines, and a restrained set of functional controls. The line and intention lead the practice area; the situation and direction sit alongside it. Notation is available as a secondary reference. The layout adapts to phone widths and respects reduced-motion settings.
 
-- Replace the default-indigo-on-white with a paper-and-ink palette:
-  - **Light**: warm off-white paper (#faf8f4-ish), near-black ink, muted warm grays.
-  - **Dark**: deep warm charcoal "stage" (#17151a-ish), soft ivory text.
-- **One accent** (keep an indigo/violet family for interactive elements) plus the
-  existing amber for tone letters.
-- **Five band hues** — the signature move: give pitch bands 1→5 a consistent
-  perceptual ramp (deep indigo → violet → magenta → orange → amber; check both
-  themes for AA contrast). Use it *everywhere pitch height appears*: canvas band
-  tints, the ˥˦˧˨˩ axis labels, optionally per-letter coloring of tone marks, and
-  the target ribbon. Height-as-hue becomes a legend the user internalizes.
+The training loop is **hear → isolate → speak → compare → reflect**. Progress records an explicit self-assessment, not a claimed level of mastery. Learners can repeat a delivery, jump within a session, resume unfinished work, or use the corpus independently.
 
-## 3. Layout & navigation
+## Verification
 
-- **Three columns → focused stage.** Keep the collection/exercise rails but demote
-  them visually (narrower, quieter, smaller text); give the practice pane a max
-  content width (~44rem) and real whitespace so the sentence and canvas dominate.
-- **Collections sidebar**: group into collapsible sections — *Foundation* (01–03,
-  ADVANCED), *Aspects 4–15*, *Aspects 16–30* — with the file numbers as small
-  badges and cleaned-up titles ("⊕ supplements" merged under their parents).
-- **Variations: cards → tabs/chips.** Three equal cards compete for attention.
-  Replace with a segmented chip row (intention names); the selected variation's
-  full notation lives in ONE panel below, next to a small static preview of its
-  target contour. Faster to scan, states the "pick one, then record" flow visually.
-- **Mobile**: rails become a slide-over drawer; canvas keeps a fixed aspect ratio;
-  variation chips scroll horizontally. (Recording on iOS Safari needs its own
-  testing pass — Phase 4 item, unchanged.)
+The test suite covers the parsers, pitch detection, transcription, scoring, signal-quality feedback, guided curriculum, storage fallbacks, and microphone cancellation. The content build reports its inventory and parsing issues. Browser verification covers the guided sequence, persistence, library filtering, notation navigation, keyboard interaction, calibration, playback, and responsive layouts. Synthetic audio is used for repeatable recorder checks; that does not substitute for checking a physical microphone or every mobile browser.
 
-## 4. The pitch canvas as centerpiece
+The completed redesign was checked with 116 passing tests, a clean lint run, a successful production build, and zero content parsing issues. Headless Edge checks covered a full guided session, persistence and resume, library search, the listening quiz, notation navigation, 320/390/768/1280-pixel layouts, and dialog focus. Synthetic input exercised the real AudioWorklet/YIN/MediaRecorder path, calibrated 110/220 Hz, compared opposite contours, played recorded audio, withheld scores for silence and whole sentences, and verified automatic stopping, canceled permissions, calibration cancellation, and microphone cleanup.
 
-Currently a 180px strip with dashed target line. Make it the stage:
-
-- Taller (~240px), soft rounded corners, faint horizontal rules at band edges,
-  **˥ ˦ ˧ ˨ ˩ labels on the left axis** in their band hues.
-- Target contour as a **soft translucent ribbon** (a few semitones thick) rather
-  than a dashed line — communicates "land anywhere in here" honestly, since the
-  scoring is tolerant.
-- Live trace: slightly glowing stroke in the accent color, round caps, a bright
-  dot riding the current pitch; Catmull-Rom smoothing on draw only (analysis
-  untouched).
-- **Recording state**: pulsing red dot + elapsed time in the canvas corner; brief
-  3-2-1 fade-in on the trace so the start doesn't jump.
-- **After stop**: the take replays as a quick draw-on animation, then the produced
-  contour stays overlaid on the target ribbon — the comparison IS the picture.
-
-## 5. Feedback & microinteractions
-
-- **Score as a ring gauge** (SVG, animated count-up ~600ms) color-stepped by the
-  existing s0–s4 classes, with per-clause chips beside it for multi-marker
-  exercises. A bare "78" becomes a satisfying reveal.
-- **Record button**: large circular FAB below the canvas, pulse animation while
-  live, `Space` keyboard shortcut, disabled-with-reason when uncalibrated.
-- **Custom tooltips** replacing native `title` on tone marks (pure-CSS popover or
-  Floating UI): styled, instant, and **works on touch** (tap to toggle). Native
-  titles stay as fallback for screen readers.
-- **Transitions**: 150ms fade/slide on exercise change and result reveal;
-  everything behind `prefers-reduced-motion`.
-
-## 6. First-run & empty states
-
-- A compact hero on first visit (no exercise selected): the loop illustrated in
-  three steps — *pick a variation → record → compare* — plus a "Calibrate your
-  voice" card explaining the 6-second setup, replacing today's bare button.
-- Friendly mic-permission-denied state with browser-specific hint.
-- Calibration modal gets a live mini pitch bar so users see the hum registering.
-
-## 7. Accessibility pass
-
-- Visible focus rings (accent, 2px offset) on all interactive elements — several
-  currently rely on default or none.
-- Canvas gets an `aria-label` summarizing the result in words ("falling contour,
-  extra-high to low"), sourced from the existing `ipaGloss`.
-- Contrast-check both themes to WCAG AA (the muted grays and band tints are the
-  risk areas); larger touch targets (min 44px) on chips and list rows.
-
----
-
-## Implementation phases (each: small commit, tests+build green)
-
-| Phase | Scope | Effort |
-|---|---|---|
-| **D1** | Design tokens (CSS custom properties for type scale, palette, band hues), bundled fonts (Fraunces + Charis SIL subset), hero typography | Small |
-| **D2** | Practice-view restructure: variation chips, single notation panel, focused stage layout, sidebar grouping | Medium |
-| **D3** | Canvas upgrade: axis labels, target ribbon, glow trace, replay animation, record states; score ring | Medium |
-| **D4** | Custom tooltips (touch-capable), first-run hero, empty states, a11y pass, mobile drawer | Medium |
-
-Notes: no new runtime dependencies except possibly Floating UI (~3 KB) in D4;
-all analysis code untouched; D1 alone transforms the perceived quality and is the
-right first commit.
+A sustained-recording check also exposed growing buffer copies in the original audio capture. The recorder now retains only the unconsumed sample overlap and batches worklet messages. A regression test verifies bounded sample memory and continuous timestamps through more than 13 seconds of input.

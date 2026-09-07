@@ -26,8 +26,8 @@ describe('dtwDistance', () => {
 describe('targetPolyline', () => {
   it('renders a fall [5,1] as a descending 0..1 line', () => {
     const line = targetPolyline([5, 1], 5);
-    expect(line[0]).toBeCloseTo(1, 6);
-    expect(line[4]).toBeCloseTo(0, 6);
+    expect(line[0]).toBeCloseTo(0.9, 6);
+    expect(line[4]).toBeCloseTo(0.1, 6);
     expect(line[2]).toBeCloseTo(0.5, 6);
   });
 
