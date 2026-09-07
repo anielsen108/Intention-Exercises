@@ -9,14 +9,19 @@ import {
 } from '../analysis/calibration';
 import {
   checkCalibrationSample,
+  calibrationPitch,
+  calibrationCaptureComplete,
+  retainCalibrationVoice,
+  CALIBRATION_TARGET_SEC,
+  CALIBRATION_MAX_SEC,
+  CALIBRATION_MIN_RMS,
   type CalibrationStage,
 } from '../analysis/calibrationSample';
-import { reliablePitch } from '../analysis/timing';
+import { ANALYSIS_FRAME_SEC, ANALYSIS_HOP_SEC } from '../analysis/timing';
 import type { TrackPoint } from '../analysis/track';
 import { playContour, stopContour } from '../audio/synth';
 
 const STAGES: CalibrationStage[] = ['speech', 'low', 'high'];
-const SECONDS = { speech: 8, low: 3, high: 3 };
 const TITLES = {
   speech: 'Your everyday speaking voice',
   low: 'Your comfortable very low',
@@ -34,10 +39,15 @@ export function CalibrationModal({
 }) {
   const [stage, setStage] = useState<CalibrationStage>('speech');
   const [phase, setPhase] = useState<
-    'ready' | 'requesting' | 'recording' | 'review'
+    'ready' | 'requesting' | 'recording' | 'processing' | 'review'
   >('ready');
   const [result, setResult] = useState<Cal | null>(null);
-  const [countdown, setCountdown] = useState(8);
+  const [countdown, setCountdown] = useState(30);
+  const [inputState, setInputState] = useState<
+    'waiting' | 'quiet' | 'unpitched' | 'voiced'
+  >('waiting');
+  const [inputLevel, setInputLevel] = useState(0);
+  const retained = useRef<TrackPoint[]>([]);
   const [liveHz, setLiveHz] = useState<number | null>(null);
   const [voicedSec, setVoicedSec] = useState(0);
   const [error, setError] = useState('');
@@ -74,14 +84,30 @@ export function CalibrationModal({
     if (pending.current) return;
     pending.current = true;
     stopContour();
-    const points: TrackPoint[] = [];
+    const points = [...retained.current];
+    const offset =
+      (points.at(-1)?.t ?? -ANALYSIS_HOP_SEC) +
+      ANALYSIS_HOP_SEC -
+      ANALYSIS_FRAME_SEC / 2;
+    let audioSec = 0;
+    let lastVoicedAt = 0;
+    let receivedAt = 0;
+    let latest: TrackPoint | undefined;
     const rec = new Recorder();
     recorder.current = rec;
-    rec.onPoint = (p) => points.push(p);
+    rec.onPoint = (p) => {
+      points.push({ ...p, t: p.t + offset });
+      latest = p;
+      audioSec = p.t + ANALYSIS_FRAME_SEC / 2;
+      receivedAt = performance.now();
+      if (calibrationPitch(p)) lastVoicedAt = audioSec;
+    };
     setPhase('requesting');
     setLiveHz(null);
-    setVoicedSec(0);
-    setCountdown(SECONDS[stage]);
+    setInputState('waiting');
+    setInputLevel(0);
+    setVoicedSec(checkCalibrationSample(points, stage).voicedSec);
+    setCountdown(CALIBRATION_MAX_SEC[stage]);
     setError('');
     try {
       await rec.start();
@@ -91,13 +117,14 @@ export function CalibrationModal({
         return;
       }
       setPhase('recording');
-      const started = performance.now();
       let finishing = false;
       const complete = async () => {
         if (finishing) return;
         finishing = true;
+        finish.current = null;
         if (interval.current) clearInterval(interval.current);
         if (timeout.current) clearTimeout(timeout.current);
+        if (alive.current) setPhase('processing');
         try {
           const r = await rec.stop();
           if (r.audioUrl) URL.revokeObjectURL(r.audioUrl);
@@ -105,10 +132,14 @@ export function CalibrationModal({
           pending.current = false;
           if (!alive.current) return;
           const checked = checkCalibrationSample(
-            r.track,
+            points,
             stage,
             samples.current.speech ? median(samples.current.speech) : undefined,
           );
+          retained.current = checked.insufficient
+            ? retainCalibrationVoice(points)
+            : [];
+          setVoicedSec(checked.insufficient ? checked.voicedSec : 0);
           if (checked.error) {
             setError(checked.error);
             setPhase('ready');
@@ -145,16 +176,36 @@ export function CalibrationModal({
       };
       finish.current = () => void complete();
       interval.current = setInterval(() => {
-        setCountdown(
-          Math.max(0, SECONDS[stage] - (performance.now() - started) / 1000),
+        const checked = checkCalibrationSample(points, stage);
+        const point = latest;
+        const receiving = point && performance.now() - receivedAt < 1000;
+        setCountdown(Math.max(0, CALIBRATION_MAX_SEC[stage] - audioSec));
+        setLiveHz(receiving && calibrationPitch(point) ? point.hz : null);
+        setInputLevel(receiving ? Math.min(1, Math.sqrt(point.rms) * 3) : 0);
+        setInputState(
+          !receiving
+            ? 'waiting'
+            : calibrationPitch(point)
+              ? 'voiced'
+              : point.rms < CALIBRATION_MIN_RMS
+                ? 'quiet'
+                : 'unpitched',
         );
-        const last = points.at(-1);
-        setLiveHz(last && reliablePitch(last) ? last.hz : null);
-        setVoicedSec(checkCalibrationSample(points, stage).voicedSec);
+        setVoicedSec(checked.voicedSec);
+        if (
+          calibrationCaptureComplete(
+            stage,
+            audioSec,
+            checked.voicedSec,
+            audioSec - lastVoicedAt,
+          )
+        )
+          void complete();
       }, 100);
+      // Also release a stalled device or a background tab whose audio clock stops.
       timeout.current = setTimeout(
         () => void complete(),
-        SECONDS[stage] * 1000,
+        (CALIBRATION_MAX_SEC[stage] + 15) * 1000,
       );
     } catch {
       pending.current = false;
@@ -167,6 +218,8 @@ export function CalibrationModal({
     }
   }
   function repeat(next: CalibrationStage) {
+    retained.current = [];
+    setVoicedSec(0);
     stopContour();
     setPlayingLevel(null);
     if (next === 'speech') samples.current = {};
@@ -262,49 +315,89 @@ export function CalibrationModal({
           Opening your microphone. Allow access when the browser asks.
         </p>
       )}
+      {phase === 'processing' && <p role="status">Checking your sample…</p>}
       {phase === 'recording' && (
         <>
           <div className="calibration-listening" role="status">
-            ●{' '}
-            {stage === 'speech'
-              ? 'Read aloud now'
-              : `Use your ${stage} voice now`}
+            {inputState === 'waiting'
+              ? 'Waiting for microphone audio…'
+              : stage === 'speech'
+                ? '● Read aloud now'
+                : `● Use your ${stage} voice now`}
           </div>
           <progress
-            max={SECONDS[stage]}
-            value={SECONDS[stage] - countdown}
-            aria-label="Recording progress"
+            max={CALIBRATION_TARGET_SEC[stage]}
+            value={Math.min(voicedSec, CALIBRATION_TARGET_SEC[stage])}
+            aria-label="Usable voice collected"
           />
           <div className="calibration-meter" aria-live="off">
-            <span>{countdown.toFixed(1)} s left</span>
+            <span>
+              {voicedSec.toFixed(1)} / {CALIBRATION_TARGET_SEC[stage]} s of
+              voice
+            </span>
             <span>{liveHz ? `${liveHz.toFixed(0)} Hz` : 'Listening…'}</span>
           </div>
-          <p className="microcopy">
-            {voicedSec.toFixed(1)} seconds of clear voice detected
+          <div className="calibration-input">
+            <span>Microphone input</span>
+            <meter
+              min={0}
+              max={1}
+              value={inputLevel}
+              aria-label="Microphone input level"
+            />
+          </div>
+          <p className="microcopy" aria-live="off">
+            {inputState === 'waiting'
+              ? 'Your microphone is starting. The voice counter waits for audio.'
+              : inputState === 'quiet'
+                ? 'The input is quiet. Pauses are fine; if you are speaking, check your microphone input.'
+                : inputState === 'unpitched'
+                  ? 'Sound is reaching the microphone. We count the parts with a trackable pitch.'
+                  : 'Your voice is being counted. Keep your natural pace; pauses and consonants are expected.'}
           </p>
-          {stage === 'speech' && (
-            <button
-              className="outline-button"
-              disabled={voicedSec < 2.5}
-              onClick={() => finish.current?.()}
-            >
-              Finished reading
-            </button>
-          )}
+          <p className="microcopy">
+            {voicedSec >= CALIBRATION_TARGET_SEC[stage] - 1e-8
+              ? 'Enough voice collected. Finish your sentence, then use this sample.'
+              : 'Keep reading or repeat the passage. Your progress is kept if you pause.'}{' '}
+            Recording pauses automatically within {Math.ceil(countdown)} s.
+          </p>
+          <button className="outline-button" onClick={() => finish.current?.()}>
+            {voicedSec < CALIBRATION_TARGET_SEC[stage] - 1e-8
+              ? 'Pause recording'
+              : stage === 'speech'
+                ? 'Finished reading'
+                : 'Use this sample'}
+          </button>
         </>
       )}
       {phase === 'ready' && (
         <>
-          <button className="primary-button" onClick={() => void capture()}>
-            {error
-              ? 'Repeat this step'
-              : stage === 'speech'
-                ? 'Record my ordinary voice'
-                : `Record my ${stage} voice`}{' '}
-            →
-          </button>
+          <div className="calibration-actions">
+            <button className="primary-button" onClick={() => void capture()}>
+              {retained.current.length
+                ? 'Continue this step'
+                : error
+                  ? 'Repeat this step'
+                  : stage === 'speech'
+                    ? 'Record my ordinary voice'
+                    : `Record my ${stage} voice`}{' '}
+              →
+            </button>
+            {retained.current.length > 0 && (
+              <button className="text-button" onClick={() => repeat(stage)}>
+                Start this step over
+              </button>
+            )}
+          </div>
           <p className="microcopy">
-            {SECONDS[stage]}-second recording · audio stays in this tab
+            {retained.current.length > 0
+              ? `${voicedSec.toFixed(1)} seconds of voice kept · `
+              : ''}
+            {stage === 'speech'
+              ? 'Read at your own pace'
+              : 'Speak or hum comfortably'}{' '}
+            · up to {CALIBRATION_MAX_SEC[stage]} seconds per recording · audio
+            stays in this tab
           </p>
         </>
       )}

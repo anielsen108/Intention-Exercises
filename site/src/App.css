@@ -2341,3 +2341,24 @@ dialog.calibration-modal {
     font-size: 18px;
   }
 }
+
+.calibration-input {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-top: 0.8rem;
+  font-size: 0.8rem;
+}
+.calibration-input meter {
+  flex: 1;
+  min-width: 0;
+  max-width: 12rem;
+  height: 0.65rem;
+}
+
+.calibration-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+}

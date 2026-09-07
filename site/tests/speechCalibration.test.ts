@@ -63,7 +63,7 @@ describe('calibration from ordinary speech', () => {
   it('requires enough clear voiced speech, and rejects excessive volume', () => {
     expect(checkCalibrationSample(samples(150), 'speech').error).toBeNull();
     expect(checkCalibrationSample(samples(150, 100), 'speech').error).toContain(
-      '2.5',
+      'captured and kept',
     );
     expect(
       checkCalibrationSample(
