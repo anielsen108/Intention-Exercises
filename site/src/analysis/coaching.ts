@@ -59,7 +59,7 @@ export function coachTake(
   if (outside > voiced.length * 0.3)
     return {
       title: 'Your voice is outside the saved range',
-      cue: 'Use “Voice range” to sample your ordinary speech and comfortable low and high again, then repeat this shape.',
+      cue: 'Use “Calibrate Vocal Range” to sample your ordinary speech and comfortable low and high again, then repeat this shape.',
       score: null,
       usable: false,
     };

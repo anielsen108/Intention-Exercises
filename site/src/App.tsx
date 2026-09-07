@@ -197,7 +197,7 @@ export default function App() {
           onClick={() => setCalibrating(true)}
         >
           <span className={calibration ? 'range-dot set' : 'range-dot'} />
-          {calibration ? 'Voice range set' : 'Voice range'}
+          Calibrate Vocal Range
         </button>
       </header>
       <main id="main-content" tabIndex={-1}>
